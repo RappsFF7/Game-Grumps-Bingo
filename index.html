@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <style>
+        html { touch-action: manipulation; } /* Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
+
+        #ggb { padding: 0; margin: 0; }
+
+        #ggb #background { position: absolute; height: 100%; width: 100%; background: url('images/gg_bg.jpg'); background-size: cover; }
+        /*#ggb #background > * { position: absolute; height: 100%; width: 100%; }
+        #ggb #background-left { background: url('images/gg_bg_car.jpg'); background-size: cover; transform: translateX(-50%); }
+        #ggb #background-right { background: url('images/gg_bg_volleyball.jpg'); background-size: cover; transform: translateX(+50%); }*/
+
+        #ggb #content { position: relative; text-align: center; user-select: none; }
+        #ggb #gg-logo { padding-top: 1vh; height: 150px; max-height: 20vh; }
+        #ggb #bingo-logo { padding-top: 1vh; height: 100px; max-height: 13vh; }
+
+        #ggb #gameboard-wrapper { padding-top: 1vh; }
+        #ggb #gameboard { display: inline-table; table-layout: fixed; border-collapse: collapse; object-fit: contain; background: white; }
+        #ggb #gameboard tr, 
+        #ggb #gameboard td { }
+        #ggb #gameboard td { text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
+        #ggb #gameboard td.checked { /*outline: solid 2px red; background-color: lightgray;*/ background: url('images/gg_dot.png'); background-size: 10px; color: white; }
+    </style>
+</head>
+<body id="ggb">
+    <div id="background">
+        <div id="background-left"></div>
+        <div id="background-right"></div>
+    </div>
+    <div id="content">
+        <div><img id="gg-logo" src="images/gg_logo.png" /></div>
+        <div><img id="bingo-logo" src="images/bingo_logo.png" /></div>
+        <div id="gameboard-wrapper"><table id="gameboard"></table></div>
+    </div>
+
+    <script>
+        var GGB = {
+            // { title: 'title', img: 'href://google.com/images/img.gif' }
+            tileValues: [
+                // Arin
+                { title: "Arin puts something in his mouth", free: true },
+                { title: "Arin wins" },
+                { title: "Arin breaks something" },
+                { title: "Arin drools" },
+                { title: "Arin gets something thrown at him" },
+
+                // Dan
+                { title: "Dan wins" },
+                { title: "Dan ties his hair up" },
+                { title: "Dan leans on arin laughing" },
+                { title: "Dan mentions a band" },
+                { title: "Dan blank stare" },
+
+                // Others
+                { title: "Suzy!" },
+                { title: "Ross!" },
+                { title: "Amy!" },
+                { title: "Reluctant participant" },
+                { title: "Guest grumps" },
+
+                // Situation
+                { title: "Sticky substance on face" },
+                { title: "Belly Reveal" },
+                { title: "Singing together" },
+                { title: "Someone in pain" },
+                { title: "The cheese is mentioned" },
+                { title: "Item not used for inteneded purpose" },
+                { title: "Crew asked a question" },
+
+                // Episodic
+                { title: "Out of the office" },
+                { title: "Versus Episode" },
+                { title: "Table is messed up" }
+            ],
+            tiles: [[]],
+            init: function () {
+                $('#gameboard').on('click', 'td', function () {
+                    GGB.doBoardClick(this);
+                });
+
+                GGB.buildGameBoard();
+            },
+            buildGameBoard: function () {
+                var board = $('#gameboard');
+                var availableTiles = $(GGB.tileValues); // duplicate so we can remove as they are used
+                var freeTile = availableTiles.filter((i,el) => !!el.free).first();
+                availableTiles.remove(freeTile);
+                for (var r = 0; r < 5; r++) {
+                    var tr = $('<tr>').appendTo(board);
+                    for (var c = 0; c < 5; c++) {
+                        var val = undefined;
+                        if (!!freeTile && r == 2 && c == 2) {
+                            val = freeTile[0];
+                        } else {
+                            var valIndex = Math.floor(Math.random() * availableTiles.length);
+                            val = availableTiles.splice(valIndex, 1)[0]; // Pop an element out of the available tiles
+                        }
+                        var td = $('<td>', { text: val.title }).appendTo(tr);
+                    }
+                }
+            },
+            doBoardClick: function (sender) {
+                sender.classList.toggle('checked');
+            }
+        };
+        GGB.init();
+    </script>
+</body>
+</html>
