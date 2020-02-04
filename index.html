@@ -2,8 +2,13 @@
 <html>
 <head>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
     <style>
-        html { touch-action: manipulation; } /* Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
+        html { touch-action: manipulation; }
+        /* Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
+
+        .template { display: none; }
 
         #ggb { padding: 0; margin: 0; }
 
@@ -13,15 +18,20 @@
         #ggb #background-right { background: url('images/gg_bg_volleyball.jpg'); background-size: cover; transform: translateX(+50%); }*/
 
         #ggb #content { position: relative; text-align: center; user-select: none; }
+
         #ggb #gg-logo { padding-top: 1vh; height: 150px; max-height: 20vh; }
         #ggb #bingo-logo { padding-top: 1vh; height: 100px; max-height: 13vh; }
-
         #ggb #gameboard-wrapper { padding-top: 1vh; }
+        #ggb #gameboard-share { padding-top: 1vh; }
+
         #ggb #gameboard { display: inline-table; table-layout: fixed; border-collapse: collapse; object-fit: contain; background: white; }
-        #ggb #gameboard tr, 
+        #ggb #gameboard tr,
         #ggb #gameboard td { }
         #ggb #gameboard td { text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
         #ggb #gameboard td.checked { /*outline: solid 2px red; background-color: lightgray;*/ background: url('images/gg_dot.png'); background-size: 10px; color: white; }
+
+        .dialog { /*display: none;*/ font-size: 1vh; }
+        .dialog#edit-dialog table { width: 75vw; max-width: 50vh; }
     </style>
 </head>
 <body id="ggb">
@@ -33,6 +43,23 @@
         <div><img id="gg-logo" src="images/gg_logo.png" /></div>
         <div><img id="bingo-logo" src="images/bingo_logo.png" /></div>
         <div id="gameboard-wrapper"><table id="gameboard"></table></div>
+        <div id="gameboard-share"><button id="btn-customize">Customize</button><button id="btn-share">Share</button></div>
+    </div>
+    <div id="dialogs">
+        <div id="edit-dialog" class="dialog">
+            <table id="edit-tiles">
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Free-Space</th>
+                    <th>Text</th>
+                </tr>
+                <tr class="tr template">
+                    <td class="controls"><span class="ui-icon ui-icon-closethick"></span></td>
+                    <td class="free"><input name="free" type="checkbox" /></td>
+                    <td class="title"><input name="title" size="100%" /></td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -56,7 +83,7 @@
                 // Others
                 { title: "Suzy!" },
                 { title: "Ross!" },
-                { title: "Amy!" },
+                { title: "Allie!" },
                 { title: "Reluctant participant" },
                 { title: "Guest grumps" },
 
@@ -76,33 +103,136 @@
             ],
             tiles: [[]],
             init: function () {
-                $('#gameboard').on('click', 'td', function () {
-                    GGB.doBoardClick(this);
+                // Setup edit dialog
+                $('#edit-dialog').dialog({
+                    autoOpen: false,
+                    title: 'Customize',
+                    width: 'auto',
+                    height: $(window).height() * 0.75,
+                    buttons: [
+                        { text: "Save", click: function () { GGB.doCustomizeDialogSave(); } },
+                        { text: "Close", click: function () { GGB.doCustomizeDialogToggle(false); } }
+                    ]
                 });
 
-                GGB.buildGameBoard();
+                // Attach board tile click events to toggle
+                $('#gameboard').on('click', 'td', function () {
+                    GGB.doBoardTileToggle(this);
+                });
+
+                // Attach customize button click
+                $('#btn-customize').on('click', function () {
+                    GGB.doCustomizeDialogToggle(true);
+                });
+
+                // Attach customize button click
+                $('#btn-share').on('click', function () {
+                    GGB.doShare();
+                });
+
+                // Load custom board
+                GGB.doLoadExportData();
+
+                // Rebuild board
+                GGB.doBuildGameBoard();
+                GGB.doBuildEditDialog();
             },
-            buildGameBoard: function () {
-                var board = $('#gameboard');
-                var availableTiles = $(GGB.tileValues); // duplicate so we can remove as they are used
-                var freeTile = availableTiles.filter((i,el) => !!el.free).first();
-                availableTiles.remove(freeTile);
+            doBuildGameBoard: function () {
+                var board = $('#gameboard').empty();
+
+                // Duplicate tiles so we can remove as they are used
+                var availableTiles = $(GGB.tileValues);
+
+                // Get a random free tile
+                var freeTiles = availableTiles.filter((i, el) => !!el.free);
+                var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
+
+                // Remove free tiles
+                availableTiles = availableTiles.filter((i, el) => !el.free);
+
+                // Build board
                 for (var r = 0; r < 5; r++) {
                     var tr = $('<tr>').appendTo(board);
                     for (var c = 0; c < 5; c++) {
                         var val = undefined;
                         if (!!freeTile && r == 2 && c == 2) {
+                            // At the center, use a free tile
                             val = freeTile[0];
                         } else {
+                            // Pop out a random element from the available tiles
                             var valIndex = Math.floor(Math.random() * availableTiles.length);
-                            val = availableTiles.splice(valIndex, 1)[0]; // Pop an element out of the available tiles
+                            val = availableTiles.splice(valIndex, 1)[0];
                         }
-                        var td = $('<td>', { text: val.title }).appendTo(tr);
+                        var td = $('<td>', { text: val.title }).data('item', val).appendTo(tr);
                     }
                 }
             },
-            doBoardClick: function (sender) {
+            doBuildEditDialog: function () {
+                var dlg = $('#edit-dialog');
+                var tbl = $('#edit-tiles').appendTo(dlg);
+
+                // Build tiles
+                $(GGB.tileValues).each(function (i, el) {
+                    var tr = tbl.find('.template.tr').clone().removeClass('template tr').data('item', el);
+                    tr.find('[name=title]').val(el.title).data('index', i);
+                    tr.find('[name=free]').prop('checked', !!el.free).data('index', i);
+                    tr.appendTo(tbl.find('tbody'));
+                });
+            },
+            doBoardTileToggle: function (sender) {
                 sender.classList.toggle('checked');
+            },
+            doCustomizeDialogToggle: function (isOpen) {
+                $('#edit-dialog').dialog((isOpen ? 'open' : 'close'));
+            },
+            doCustomizeDialogSave: function () {
+                var dlg = $('#edit-dialog');
+                var dataEls = dlg.find(':input');
+                var tileValuesNew = [];
+                $(dataEls).each(function (i, el) {
+                    var o = $(el);
+                    var val = (o.is(':checkbox') ? o.prop('checked') : o.val());
+                    var tileValue = tileValuesNew[o.data('index')] = (tileValuesNew[o.data('index')] || {});
+                    tileValue[o.attr('name')] = val;
+                });
+                //console.log(dataEls, tileValuesNew, GGB.tilesValues);
+                GGB.tileValues = tileValuesNew;
+                GGB.doCustomizeDialogToggle(false);
+                GGB.doBuildGameBoard();
+            },
+            doShare: function () {
+                // Generate share info
+                var customTitle = 'Game Grumps Bingo Custom Board';
+                var params = new URLSearchParams(window.location.search);
+                params.set('customboard', GGB.doExportData());
+                var shareUrl = window.location.href.split('?')[0] + '?' + params.toString();
+
+                // Share (mobile or desktop)
+                if (navigator.share) {
+                    navigator.share({
+                        title: customTitle,
+                        url: shareUrl
+                    })
+                } else {
+                    $('<div title="' + customTitle + '"><a href="' + shareUrl + '">' + shareUrl + '</div>').dialog();
+                }
+            },
+            doExportData: function () {
+                // Convert data to base64
+                return btoa(JSON.stringify(GGB.tileValues));
+            },
+            doLoadExportData: function () {
+                // Convert data from base64 in query string
+                var params = new URLSearchParams(window.location.search);
+                var customboard64 = params.get('customboard');
+                if (!!customboard64) {
+                    try {
+                        GGB.tileValues = JSON.parse(atob(customboard64));
+                    } catch (e) {
+                        console.error(e);
+                        alert('Failed to load custom board');
+                    }
+                }
             }
         };
         GGB.init();
