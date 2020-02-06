@@ -18,7 +18,7 @@
 
         .hr { border-top: 1px solid #f1d2b8; margin: 5px; }
 
-        .button { background-color: #F2A561; color: white; border: none; border-radius: 25px; padding: 5px 10px; }
+        .button { background-color: #F2A561; color: white; border: none; border-radius: 5vw; padding: 1vw 3vw; }
 
         #ggb { padding: 0; margin: 0; }
 
@@ -35,6 +35,7 @@
         #ggb #header-bar > * { vertical-align: middle; }
         #ggb #header-bar img { height: 5vh; max-height: 10vw;}
         #ggb #gameboard-share { float: right; }
+        #ggb #gameboard-share > * { margin-left: 15px; }
 
         #ggb #gameboard-wrapper { }
         #ggb #gameboard { table-layout: fixed; border-collapse: collapse; object-fit: contain; }
@@ -45,14 +46,18 @@
         #ggb #gameboard td.checked { background: rgba(255,255,255,0.5); text-shadow: -2px 2px white, 1px -1px white; }
 
         #ggb #config-wrapper { margin-bottom: 15px; }
-        #ggb #config-area { display: inline-block; background-color: #F39450; padding: 10px 20px 0 20px; border-radius: 10px; }
-        #ggb #config-tiles { border-spacing: 0 5px; }
+        #ggb #config-area { background-color: #F39450; padding: 10px 20px 0 20px; }
+        #ggb #config-tiles { width: 100%; border-spacing: 0 1vw; }
         #ggb #config-tiles tr { }
+        #ggb #config-tiles th.min { width: 1%; }
         #ggb #config-tiles td { background-color: #F2A561; padding: 5px 10px; }
         #ggb #config-tiles td:first-child { border-radius: 25px 0 0 25px; }
         #ggb #config-tiles td:last-child { border-radius: 0 25px 25px 0; }
-        #ggb #config-tiles input[name=title] { width: 600px; border-radius: 25px; border: none; padding: 5px 10px; background-color: #f1d2b8; }
-        #ggb #config-actions { margin: 15px; }
+        #ggb #config-tiles input[name=title] { width: 95%; border-radius: 25px; border: none; padding: 5px 10px; background-color: #f1d2b8; }
+        #ggb #config-tiles input[name=free] { display: none; }
+        #ggb #config-tiles input[name=free] ~ .free-icon { display: inline-block; width: 20px; height: 20px; background-color: #f1d2b8; }
+        #ggb #config-tiles input[name=free]:checked ~ .free-icon { background-color: white; }
+        #ggb #config-actions { padding: 15px; }
 
         #ggb #share-wrapper { background-color: #F2A561; padding: 5px 10px; }
         #ggb #share-wrapper #lnkShare { background-color: #f1d2b8; display: inline-block; padding: 0.5em 1em; margin: 1em; border-radius: 2em; }
@@ -79,13 +84,13 @@
             <div id="config-area">
                 <table id="config-tiles">
                     <tr>
-                        <th>&nbsp;</th>
-                        <th>Free</th>
+                        <!--<th class="min">&nbsp;</th>-->
+                        <th class="min">Free</th>
                         <th>Text</th>
                     </tr>
                     <tr class="tr template">
-                        <td class="controls"><span class="ui-icon ui-icon-closethick"></span></td>
-                        <td class="free"><input name="free" type="checkbox" /></td>
+                        <!--<td class="controls"><span class="ui-icon ui-icon-closethick"></span></td>-->
+                        <td class="free"><input name="free" type="checkbox" /><label for="" class="free-icon"></label></td>
                         <td class="title"><input name="title" /></td>
                     </tr>
                 </table>
@@ -152,6 +157,18 @@
             };
 
             GGB.page = {
+                init: function () {
+                    // Attach events for header
+                    $('#gg-logo, #bingo-logo').on('click', function () {
+                        GGB.gameboard.doShow();
+                    });
+                    $('#btn-config').on('click', function () {
+                        GGB.configTiles.doShow();
+                    });
+                    $('#btn-share').on('click', function () {
+                        GGB.configTiles.doShare();
+                    });
+                },
                 doToggleContentBody: function (contentBodyId) {
                     $('.content-body').hide().filter(contentBodyId).show();
                 }
@@ -209,12 +226,6 @@
             GGB.configTiles = {
                 init: function () {
                     // Attach action handlers
-                    $('#btn-config').on('click', function () {
-                        GGB.configTiles.doShow();
-                    });
-                    $('#btn-share').on('click', function () {
-                        GGB.configTiles.doShare();
-                    });
                     $('#btn-config-save').on('click', function () {
                         GGB.configTiles.doSave();
                     });
@@ -236,9 +247,11 @@
 
                     // Build tiles
                     $(GGB.data.tiles).each(function (i, el) {
+                        var freeId = 'free-' + i;
                         var tr = tbl.find('.template.tr').clone().removeClass('template tr').data('item', el);
                         tr.find('[name=title]').val(el.title).data('index', i);
-                        tr.find('[name=free]').prop('checked', !!el.free).data('index', i);
+                        tr.find('[name=free]').attr('id', freeId).prop('checked', !!el.free).data('index', i);
+                        tr.find('label').attr('for', freeId);
                         tr.appendTo(tbl.find('tbody'));
                     });
                 },
@@ -295,6 +308,7 @@
                 }
             };
 
+            GGB.page.init();
             GGB.configTiles.init();
             GGB.gameboard.init();
         </script>
