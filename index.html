@@ -51,12 +51,14 @@
         #ggb #config-tiles tr { }
         #ggb #config-tiles th.min { width: 1%; }
         #ggb #config-tiles td { background-color: #F2A561; padding: 5px 10px; }
+        #ggb #config-tiles td > * { vertical-align: middle; }
         #ggb #config-tiles td:first-child { border-radius: 25px 0 0 25px; }
         #ggb #config-tiles td:last-child { border-radius: 0 25px 25px 0; }
+        #ggb #config-tiles .remove { height: 20px; width: 20px; background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
         #ggb #config-tiles input[name=title] { width: 95%; border-radius: 25px; border: none; padding: 5px 10px; background-color: #f1d2b8; }
         #ggb #config-tiles input[name=free] { display: none; }
         #ggb #config-tiles input[name=free] ~ .free-icon { display: inline-block; width: 20px; height: 20px; background-color: #f1d2b8; }
-        #ggb #config-tiles input[name=free]:checked ~ .free-icon { background-color: white; }
+        #ggb #config-tiles input[name=free]:checked ~ .free-icon { background-image: url('images/icons8-checkmark-50.svg'); background-size: contain; }
         #ggb #config-actions { padding: 15px; }
 
         #ggb #share-wrapper { background-color: #F2A561; padding: 5px 10px; }
@@ -82,18 +84,21 @@
         </div>
         <div id="config-wrapper" class="content-body">
             <div id="config-area">
-                <table id="config-tiles">
-                    <tr>
-                        <!--<th class="min">&nbsp;</th>-->
-                        <th class="min">Free</th>
-                        <th>Text</th>
-                    </tr>
-                    <tr class="tr template">
-                        <!--<td class="controls"><span class="ui-icon ui-icon-closethick"></span></td>-->
+                <table id="config-tiles-template" class="template">
+                    <tr class="template">
+                        <td class="controls"><img class="remove" src="images/icons8-delete-50.svg" /></td>
                         <td class="free"><input name="free" type="checkbox" /><label for="" class="free-icon"></label></td>
                         <td class="title"><input name="title" /></td>
                     </tr>
                 </table>
+                <table id="config-tiles">
+                    <tr>
+                        <th class="min">&nbsp;</th>
+                        <th class="min">Free</th>
+                        <th>Text</th>
+                    </tr>
+                </table>
+                <div><button id="btn-config-add" class="button">Add Row</button></div>
                 <div class="hr"></div>
                 <div id="config-actions">
                     <button id="btn-config-save" class="button">Save</button>
@@ -105,212 +110,232 @@
             <div>Copy this link and send it to your friends!</div>
             <div><a id="lnkShare">Custom Bingo</a></div>
         </div>
+        <div id="about-wrapper" class="content-body">
+            <div><a target="_blank" href="https://icons8.com/icons/set/menu">Menu</a>, <a target="_blank" href="https://icons8.com/icons/set/delete-sign">Delete</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a></div>
+        </div>
         <div id="dialogs">
             <div id="dlg" class="dialog"></div>
         </div>
+    </div>
 
-        <script>
-            var GGB = {};
+    <script>
+        var GGB = {};
 
-            GGB.data = {
-                // { title: 'title', img: 'href://google.com/images/img.gif' }
-                tiles: [
-                    // Arin
-                    { title: "Arin puts something in his mouth", free: true },
-                    { title: "Arin wins" },
-                    { title: "Arin breaks something" },
-                    { title: "Arin drools" },
-                    { title: "Arin gets something thrown at him" },
+        GGB.data = {
+            // { title: 'title', img: 'href://google.com/images/img.gif' }
+            tiles: [
+                // Arin
+                { title: "Arin puts something in his mouth", free: true },
+                { title: "Arin wins" },
+                { title: "Arin breaks something" },
+                { title: "Arin drools" },
+                { title: "Arin gets something thrown at him" },
 
-                    // Dan
-                    { title: "Dan wins" },
-                    { title: "Dan ties his hair up" },
-                    { title: "Dan leans on arin laughing" },
-                    { title: "Dan mentions a band" },
-                    { title: "Dan blank stare" },
+                // Dan
+                { title: "Dan wins" },
+                { title: "Dan ties his hair up" },
+                { title: "Dan leans on arin laughing" },
+                { title: "Dan mentions a band" },
+                { title: "Dan blank stare" },
 
-                    // Others
-                    { title: "Suzy!" },
-                    { title: "Ross!" },
-                    { title: "Allie!" },
-                    { title: "Reluctant participant" },
-                    { title: "Guest grumps" },
+                // Others
+                { title: "Suzy!" },
+                { title: "Ross!" },
+                { title: "Allie!" },
+                { title: "Reluctant participant" },
+                { title: "Guest grumps" },
 
-                    // Situation
-                    { title: "Sticky substance on face" },
-                    { title: "Belly Reveal" },
-                    { title: "Singing together" },
-                    { title: "Someone in pain" },
-                    { title: "The cheese is mentioned" },
-                    { title: "Item not used for inteneded purpose" },
-                    { title: "Crew asked a question" },
+                // Situation
+                { title: "Sticky substance on face" },
+                { title: "Belly Reveal" },
+                { title: "Singing together" },
+                { title: "Someone in pain" },
+                { title: "The cheese is mentioned" },
+                { title: "Item not used for inteneded purpose" },
+                { title: "Crew asked a question" },
 
-                    // Episodic
-                    { title: "Out of the office" },
-                    { title: "Versus Episode" },
-                    { title: "Table is messed up" }
-                ]
-            };
+                // Episodic
+                { title: "Out of the office" },
+                { title: "Versus Episode" },
+                { title: "Table is messed up" }
+            ]
+        };
 
-            GGB.runtime = {
-                tiles: [[]]
-            };
+        GGB.runtime = {
+            tiles: [[]]
+        };
 
-            GGB.page = {
-                init: function () {
-                    // Attach events for header
-                    $('#gg-logo, #bingo-logo').on('click', function () {
-                        GGB.gameboard.doShow();
-                    });
-                    $('#btn-config').on('click', function () {
-                        GGB.configTiles.doShow();
-                    });
-                    $('#btn-share').on('click', function () {
-                        GGB.configTiles.doShare();
-                    });
-                },
-                doToggleContentBody: function (contentBodyId) {
-                    $('.content-body').hide().filter(contentBodyId).show();
-                }
-            };
-
-            GGB.gameboard = {
-                init: function () {
-                    // Attach board tile click events to toggle
-                    $('#gameboard').on('click', 'td', function () {
-                        GGB.gameboard.doToggleSquare(this);
-                    });
-
-                    // Rebuild board
-                    GGB.gameboard.doRefresh();
+        GGB.page = {
+            init: function () {
+                // Attach events for header
+                $('#gg-logo, #bingo-logo').on('click', function () {
                     GGB.gameboard.doShow();
-                },
-                doToggleSquare: function (sender) {
-                    sender.classList.toggle('checked');
-                },
-                doShow: function () {
-                    GGB.page.doToggleContentBody('#gameboard-wrapper');
-                },
-                doRefresh: function () {
-                    var board = $('#gameboard').empty();
+                });
+                $('#btn-config').on('click', function () {
+                    GGB.configTiles.doShow();
+                });
+                $('#btn-share').on('click', function () {
+                    GGB.configTiles.doShare();
+                });
+            },
+            doToggleContentBody: function (contentBodyId) {
+                $('.content-body').hide().filter(contentBodyId).show();
+            }
+        };
 
-                    // Duplicate tiles so we can remove as they are used
-                    var availableTiles = $(GGB.data.tiles);
+        GGB.gameboard = {
+            init: function () {
+                // Attach board tile click events to toggle
+                $('#gameboard').on('click', 'td', function () {
+                    GGB.gameboard.doToggleSquare(this);
+                });
 
-                    // Get a random free tile
-                    var freeTiles = availableTiles.filter((i, el) => !!el.free);
-                    var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
+                // Rebuild board
+                GGB.gameboard.doRefresh();
+                GGB.gameboard.doShow();
+            },
+            doToggleSquare: function (sender) {
+                sender.classList.toggle('checked');
+            },
+            doShow: function () {
+                GGB.page.doToggleContentBody('#gameboard-wrapper');
+            },
+            doRefresh: function () {
+                var board = $('#gameboard').empty();
 
-                    // Remove free tiles
-                    availableTiles = availableTiles.filter((i, el) => !el.free);
+                // Duplicate tiles so we can remove as they are used
+                var availableTiles = $(GGB.data.tiles);
 
-                    // Build board
-                    for (var r = 0; r < 5; r++) {
-                        var tr = $('<tr>').appendTo(board);
-                        for (var c = 0; c < 5; c++) {
-                            var val = undefined;
-                            if (!!freeTile && r == 2 && c == 2) {
-                                // At the center, use a free tile
-                                val = freeTile[0];
-                            } else {
-                                // Pop out a random element from the available tiles
-                                var valIndex = Math.floor(Math.random() * availableTiles.length);
-                                val = availableTiles.splice(valIndex, 1)[0];
-                            }
-                            var td = $('<td>', { text: val.title }).data('item', val).appendTo(tr);
+                // Get a random free tile
+                var freeTiles = availableTiles.filter((i, el) => !!el.free);
+                var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
+
+                // Remove free tiles
+                availableTiles = availableTiles.filter((i, el) => !el.free);
+
+                // Build board
+                for (var r = 0; r < 5; r++) {
+                    var tr = $('<tr>').appendTo(board);
+                    for (var c = 0; c < 5; c++) {
+                        var val = undefined;
+                        if (!!freeTile && r == 2 && c == 2) {
+                            // At the center, use a free tile
+                            val = freeTile[0];
+                        } else {
+                            // Pop out a random element from the available tiles
+                            var valIndex = Math.floor(Math.random() * availableTiles.length);
+                            val = availableTiles.splice(valIndex, 1)[0];
                         }
+                        var td = $('<td>', { text: val.title }).data('item', val).appendTo(tr);
                     }
                 }
-            };
+            }
+        };
 
-            GGB.configTiles = {
-                init: function () {
-                    // Attach action handlers
-                    $('#btn-config-save').on('click', function () {
-                        GGB.configTiles.doSave();
-                    });
-                    $('#btn-config-close').on('click', function () {
-                        GGB.gameboard.doShow();
-                    });
-
-                    // Load custom board
-                    GGB.configTiles.doLoad();
-
-                    // Build customize area
-                    GGB.configTiles.doRefresh();
-                },
-                doShow: function () {
-                    GGB.page.doToggleContentBody('#config-wrapper');
-                },
-                doRefresh: function () {
-                    var tbl = $('#config-tiles');
-
-                    // Build tiles
-                    $(GGB.data.tiles).each(function (i, el) {
-                        var freeId = 'free-' + i;
-                        var tr = tbl.find('.template.tr').clone().removeClass('template tr').data('item', el);
-                        tr.find('[name=title]').val(el.title).data('index', i);
-                        tr.find('[name=free]').attr('id', freeId).prop('checked', !!el.free).data('index', i);
-                        tr.find('label').attr('for', freeId);
-                        tr.appendTo(tbl.find('tbody'));
-                    });
-                },
-                doSave: function () {
-                    var tbl = $('#config-tiles');
-                    var dataEls = tbl.find(':input');
-                    var tileValuesNew = [];
-                    $(dataEls).each(function (i, el) {
-                        var o = $(el);
-                        var val = (o.is(':checkbox') ? o.prop('checked') : o.val());
-                        var tileValue = tileValuesNew[o.data('index')] = (tileValuesNew[o.data('index')] || {});
-                        tileValue[o.attr('name')] = val;
-                    });
-                    //console.log(dataEls, tileValuesNew, GGB.tilesValues);
-                    GGB.data.tiles = tileValuesNew;
+        GGB.configTiles = {
+            init: function () {
+                // Attach action handlers
+                $('#btn-config-save').on('click', function () {
+                    GGB.configTiles.doSave();
+                });
+                $('#btn-config-close').on('click', function () {
                     GGB.gameboard.doShow();
-                    GGB.gameboard.doRefresh();
-                },
-                doShare: function () {
-                    // Generate share info
-                    var customTitle = 'Game Grumps Bingo Custom Board';
-                    var params = new URLSearchParams(window.location.search);
-                    params.set('customboard', GGB.configTiles.doExport());
-                    var shareUrl = window.location.href.split('?')[0] + '?' + params.toString();
+                });
+                $('#btn-config-add').on('click', function () {
+                    GGB.configTiles.doAdd();
+                });
+                $('#config-tiles').on('click', '.remove', function () {
+                    GGB.configTiles.doDelete($(this).closest('tr').data('item'));
+                });
 
-                    // Share (mobile or desktop)
-                    if (navigator.share) {
-                        navigator.share({
-                            title: customTitle,
-                            url: shareUrl
-                        });
-                    } else {
-                        var share = $('#share-wrapper');
-                        share.find('#lnkShare').attr('href', shareUrl).text(customTitle);
-                        GGB.page.doToggleContentBody('#share-wrapper');
-                    }
-                },
-                doExport: function () {
-                    // Convert data to base64
-                    return btoa(JSON.stringify(GGB.data.tiles));
-                },
-                doLoad: function () {
-                    // Convert data from base64 in query string
-                    var params = new URLSearchParams(window.location.search);
-                    var customboard64 = params.get('customboard');
-                    if (!!customboard64) {
-                        try {
-                            GGB.data.tiles = JSON.parse(atob(customboard64));
-                        } catch (e) {
-                            console.error(e);
-                            alert('Failed to load custom board');
-                        }
+                // Load custom board
+                GGB.configTiles.doLoad();
+
+                // Build customize area
+                GGB.configTiles.doRefresh();
+            },
+            doShow: function () {
+                GGB.page.doToggleContentBody('#config-wrapper');
+            },
+            doRefresh: function () {
+                var tblTemplate = $('#config-tiles-template');
+                var tbl = $('#config-tiles');
+
+                // Build tiles
+                tbl.find('td').parent().remove();
+                $(GGB.data.tiles).each(function (i, el) {
+                    var freeId = 'free-' + i;
+                    var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
+                    tr.find('[name=title]').val(el.title).data('index', i);
+                    tr.find('[name=free]').attr('id', freeId).prop('checked', !!el.free).data('index', i);
+                    tr.find('label').attr('for', freeId);
+                    tr.appendTo(tbl.find('tbody'));
+                });
+            },
+            doDelete: function (entry) {
+                GGB.data.tiles = GGB.data.tiles.filter(el => el.title != entry.title);
+                GGB.configTiles.doRefresh();
+            },
+            doAdd: function () {
+                GGB.data.tiles.push({});
+                GGB.configTiles.doRefresh();
+            },
+            doSave: function () {
+                var tbl = $('#config-tiles');
+                var dataEls = tbl.find(':input');
+                var tileValuesNew = [];
+                $(dataEls).each(function (i, el) {
+                    var o = $(el);
+                    var val = (o.is(':checkbox') ? o.prop('checked') : o.val());
+                    var tileValue = tileValuesNew[o.data('index')] = (tileValuesNew[o.data('index')] || {});
+                    tileValue[o.attr('name')] = val;
+                });
+                //console.log(dataEls, tileValuesNew, GGB.tilesValues);
+                GGB.data.tiles = tileValuesNew;
+                GGB.gameboard.doShow();
+                GGB.gameboard.doRefresh();
+            },
+            doShare: function () {
+                // Generate share info
+                var customTitle = 'Game Grumps Bingo Custom Board';
+                var params = new URLSearchParams(window.location.search);
+                params.set('customboard', GGB.configTiles.doExport());
+                var shareUrl = window.location.href.split('?')[0] + '?' + params.toString();
+
+                // Share (mobile or desktop)
+                if (navigator.share) {
+                    navigator.share({
+                        title: customTitle,
+                        url: shareUrl
+                    });
+                } else {
+                    var share = $('#share-wrapper');
+                    share.find('#lnkShare').attr('href', shareUrl).text(customTitle);
+                    GGB.page.doToggleContentBody('#share-wrapper');
+                }
+            },
+            doExport: function () {
+                // Convert data to base64
+                return btoa(JSON.stringify(GGB.data.tiles));
+            },
+            doLoad: function () {
+                // Convert data from base64 in query string
+                var params = new URLSearchParams(window.location.search);
+                var customboard64 = params.get('customboard');
+                if (!!customboard64) {
+                    try {
+                        GGB.data.tiles = JSON.parse(atob(customboard64));
+                    } catch (e) {
+                        console.error(e);
+                        alert('Failed to load custom board');
                     }
                 }
-            };
+            }
+        };
 
-            GGB.page.init();
-            GGB.configTiles.init();
-            GGB.gameboard.init();
-        </script>
+        GGB.page.init();
+        GGB.configTiles.init();
+        GGB.gameboard.init();
+    </script>
 </body>
 </html>
