@@ -15,6 +15,8 @@
         .template { display: none; }
         .dialog { display: none; }
         .hidden { display: none; }
+        .ul-nostyle { padding: 0; margin: 0; }
+        .ul-nostyle > li { padding: 0; margin: 0; list-style: none; }
 
         .hr { border-top: 1px solid #f1d2b8; margin: 5px; }
 
@@ -29,13 +31,20 @@
 
         #ggb #content { position: relative; text-align: center; user-select: none; }
         #ggb #content table { display: inline-table; }
+        #ggb #content table.template { display: none; }
         #ggb #content .content-body { display: none; }
 
         #ggb #header-bar { background-color: #F39450; text-align: left; padding: 1vh; margin-bottom: 4vh; }
         #ggb #header-bar > * { vertical-align: middle; }
         #ggb #header-bar img { height: 5vh; max-height: 10vw;}
-        #ggb #gameboard-share { float: right; }
-        #ggb #gameboard-share > * { margin-left: 15px; }
+        #ggb #header-menu { float: right; }
+        #ggb #header-menu > * { margin-left: 15px; }
+        #ggb #header-menu-popup { display: none; background-color: #F39450; padding: 1vh; position: fixed; top: 0; right: 0; }
+        #ggb #header-menu-popup ul { display: inline-block; text-align: right; }
+        #ggb #header-menu-popup li { padding-bottom: 2vh; }
+        #ggb #header-menu-popup li:last-child { padding-bottom: 0px; }
+        #ggb #header-menu-popup li > * { vertical-align: middle; }
+        #ggb #header-menu-popup img { height: 5vh; }
 
         #ggb #gameboard-wrapper { }
         #ggb #gameboard { table-layout: fixed; border-collapse: collapse; object-fit: contain; }
@@ -49,13 +58,14 @@
         #ggb #config-area { background-color: #F39450; padding: 10px 20px 0 20px; }
         #ggb #config-tiles { width: 100%; border-spacing: 0 1vw; }
         #ggb #config-tiles tr { }
-        #ggb #config-tiles th.min { width: 1%; }
-        #ggb #config-tiles td { background-color: #F2A561; padding: 5px 10px; }
+        #ggb #config-tiles tr > * { padding: 5px 20px; }
+        #ggb #config-tiles tr > *:first-child { border-radius: 25px 0 0 25px; padding-left: 30px; }
+        #ggb #config-tiles tr > *:last-child { border-radius: 0 25px 25px 0; padding-right: 30px; }
+        #ggb #config-tiles td { background-color: #F2A561; }
         #ggb #config-tiles td > * { vertical-align: middle; }
-        #ggb #config-tiles td:first-child { border-radius: 25px 0 0 25px; }
-        #ggb #config-tiles td:last-child { border-radius: 0 25px 25px 0; }
+        #ggb #config-tiles th.min { width: 1%; }
         #ggb #config-tiles .remove { height: 20px; width: 20px; background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
-        #ggb #config-tiles input[name=title] { width: 95%; border-radius: 25px; border: none; padding: 5px 10px; background-color: #f1d2b8; }
+        #ggb #config-tiles input[name=title] { width: 90%; border-radius: 25px; border: none; padding: 5px 30px; background-color: #f1d2b8; }
         #ggb #config-tiles input[name=free] { display: none; }
         #ggb #config-tiles input[name=free] ~ .free-icon { display: inline-block; width: 20px; height: 20px; background-color: #f1d2b8; }
         #ggb #config-tiles input[name=free]:checked ~ .free-icon { background-image: url('images/icons8-checkmark-50.svg'); background-size: contain; }
@@ -63,6 +73,8 @@
 
         #ggb #share-wrapper { background-color: #F2A561; padding: 5px 10px; }
         #ggb #share-wrapper #lnkShare { background-color: #f1d2b8; display: inline-block; padding: 0.5em 1em; margin: 1em; border-radius: 2em; }
+        
+        #ggb #about-wrapper { background-color: #F2A561; padding: 5px 10px; }
     </style>
 </head>
 <body id="ggb">
@@ -74,10 +86,17 @@
         <div id="header-bar">
             <img id="gg-logo" src="images/gg_logo.png" />
             <img id="bingo-logo" src="images/bingo_logo.png" />
-            <span id="gameboard-share">
-                <img id="btn-config" src="images/icon-gear.png" />
-                <img id="btn-share" src="images/icon-share.png" />
+            <span id="header-menu">
+                <img id="btn-menu" src="images/icons8-menu-vertical-50.png" />
             </span>
+            <div id="header-menu-popup">
+                <ul class="ul-nostyle">
+                    <li id="btn-menu-back"><img src="images/icons8-menu-vertical-50.png" />
+                    <li id="btn-config"><img src="images/icons8-settings-50.svg" />Config
+                    <li id="btn-share"><img src="images/icons8-share-30.svg" />Share&nbsp;
+                    <li id="btn-about"><img src="images/icons8-info-50.svg" />About&nbsp;
+                </ul>
+            </div>
         </div>
         <div id="gameboard-wrapper" class="content-body">
             <table id="gameboard"></table>
@@ -93,8 +112,8 @@
                 </table>
                 <table id="config-tiles">
                     <tr>
-                        <th class="min">&nbsp;</th>
-                        <th class="min">Free</th>
+                        <th class="min"><img src="images/icons8-remove-30.svg" /></th>
+                        <th class="min"><img src="images/icon-grid-center-50.svg" height="30" /></th>
                         <th>Text</th>
                     </tr>
                 </table>
@@ -111,6 +130,7 @@
             <div><a id="lnkShare">Custom Bingo</a></div>
         </div>
         <div id="about-wrapper" class="content-body">
+            <div>About</div>
             <div><a target="_blank" href="https://icons8.com/icons/set/menu">Menu</a>, <a target="_blank" href="https://icons8.com/icons/set/delete-sign">Delete</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a></div>
         </div>
         <div id="dialogs">
@@ -170,15 +190,31 @@
                 // Attach events for header
                 $('#gg-logo, #bingo-logo').on('click', function () {
                     GGB.gameboard.doShow();
+                    GGB.page.doToggleMenu(false);
+                });
+                $('#btn-menu, #btn-menu-back').on('click', function () {
+                    GGB.page.doToggleMenu();
                 });
                 $('#btn-config').on('click', function () {
                     GGB.configTiles.doShow();
+                    GGB.page.doToggleMenu(false);
                 });
                 $('#btn-share').on('click', function () {
                     GGB.configTiles.doShare();
+                    GGB.page.doToggleMenu(false);
+                });
+                $('#btn-about').on('click', function () {
+                    GGB.page.doShowAbout();
+                    GGB.page.doToggleMenu(false);
                 });
             },
-            doToggleContentBody: function (contentBodyId) {
+            doToggleMenu: function (isShow) {
+                var popup = $('#header-menu-popup').toggle(isShow);
+            },
+            doShowAbout: function () {
+                GGB.page.doShowContentBody('#about-wrapper');
+            },
+            doShowContentBody: function (contentBodyId) {
                 $('.content-body').hide().filter(contentBodyId).show();
             }
         };
@@ -198,7 +234,7 @@
                 sender.classList.toggle('checked');
             },
             doShow: function () {
-                GGB.page.doToggleContentBody('#gameboard-wrapper');
+                GGB.page.doShowContentBody('#gameboard-wrapper');
             },
             doRefresh: function () {
                 var board = $('#gameboard').empty();
@@ -255,7 +291,7 @@
                 GGB.configTiles.doRefresh();
             },
             doShow: function () {
-                GGB.page.doToggleContentBody('#config-wrapper');
+                GGB.page.doShowContentBody('#config-wrapper');
             },
             doRefresh: function () {
                 var tblTemplate = $('#config-tiles-template');
@@ -311,7 +347,7 @@
                 } else {
                     var share = $('#share-wrapper');
                     share.find('#lnkShare').attr('href', shareUrl).text(customTitle);
-                    GGB.page.doToggleContentBody('#share-wrapper');
+                    GGB.page.doShowContentBody('#share-wrapper');
                 }
             },
             doExport: function () {
