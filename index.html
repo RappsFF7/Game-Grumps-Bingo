@@ -24,6 +24,13 @@
 
         #ggb { padding: 0; margin: 0; }
 
+        #ggb .img-delete { height: 50px; width: 50px; background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
+        #ggb .img-checkbox { display: none; }
+        #ggb .img-checkbox ~ label { display: inline-block; height: 75px; width: 75px; background-image: url('images/icons8-toggle-off-50.png'); background-size: contain; }
+        #ggb .img-checkbox:checked ~ label { background-image: url('images/icons8-toggle-on-50.png'); }
+        #ggb .img-checkbox.img-grid ~ label { height: 50px; width: 50px; background-image: url('images/icons8-squared-menu-outer-50.png'); }
+        #ggb .img-checkbox.img-grid:checked ~ label { background-image: url('images/icons8-squared-menu-center-50.png'); }
+
         #ggb #background { position: fixed; height: 100vh; width: 100vw; background: url('images/gg_bg.jpg'); background-size: cover; }
         /*#ggb #background > * { position: absolute; height: 100%; width: 100%; }
         #ggb #background-left { background: url('images/gg_bg_car.jpg'); background-size: cover; transform: translateX(-50%); }
@@ -32,43 +39,42 @@
         #ggb #content { position: relative; text-align: center; user-select: none; }
         #ggb #content table { display: inline-table; }
         #ggb #content table.template { display: none; }
-        #ggb #content .content-body { display: none; }
+        #ggb #content .content-body { display: none; box-shadow: 0 0 10px black; }
+        #ggb #content #gameboard-wrapper.content-body { box-shadow: none; }
 
-        #ggb #header-bar { background-color: #F39450; text-align: left; padding: 1vh; margin-bottom: 4vh; }
+        #ggb #header-bar { background-color: #F39450; text-align: left; padding: 1vh; margin-bottom: 4vh; box-shadow: 0 0 10px black; }
         #ggb #header-bar > * { vertical-align: middle; }
-        #ggb #header-bar img { height: 5vh; max-height: 10vw;}
+        #ggb #header-bar img { height: 5vh; max-height: 10vw; }
         #ggb #header-menu { float: right; }
         #ggb #header-menu > * { margin-left: 15px; }
-        #ggb #header-menu-popup { display: none; background-color: #F39450; padding: 1vh; position: fixed; top: 0; right: 0; }
-        #ggb #header-menu-popup ul { display: inline-block; text-align: right; }
-        #ggb #header-menu-popup li { padding-bottom: 2vh; }
+        #ggb #header-menu-popup { display: none; background-color: #F39450; padding: 1vh; position: fixed; top: 0; right: 0; box-shadow: -1px 1px 20px black; }
+        #ggb #header-menu-popup ul { display: inline-block; }
+        #ggb #header-menu-popup li { padding: 1vh; }
+        #ggb #header-menu-popup li:first-child { padding: 0; text-align: right; }
         #ggb #header-menu-popup li:last-child { padding-bottom: 0px; }
         #ggb #header-menu-popup li > * { vertical-align: middle; }
-        #ggb #header-menu-popup img { height: 5vh; }
+        #ggb #header-menu-popup img { height: 5vh; padding-right: 20px; }
+        #ggb #header-menu-popup li:first-child img { padding: 0; }
 
         #ggb #gameboard-wrapper { }
-        #ggb #gameboard { table-layout: fixed; border-collapse: collapse; object-fit: contain; }
-        #ggb #gameboard tr,
-        #ggb #gameboard td { }
-        #ggb #gameboard td { background: white; text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
+        #ggb #gameboard { table-layout: fixed; border-collapse: collapse; object-fit: contain; box-shadow: 0 0 10px black; }
+        #ggb #gameboard tr > th { height: auto; }
+        #ggb #gameboard tr > * { background: white; text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
         /*#ggb #gameboard td.checked { background: url('images/gg_dot.png'); background-size: 10px; color: white; }*/
         #ggb #gameboard td.checked { background: rgba(255,255,255,0.5); text-shadow: -2px 2px white, 1px -1px white; }
 
         #ggb #config-wrapper { margin-bottom: 15px; }
-        #ggb #config-area { background-color: #F39450; padding: 10px 20px 0 20px; }
+        #ggb #config-area { background-color: #F39450; padding: 25px; }
+        #ggb #config-area input[name=name] { width: 90%; border: none; background-color: transparent; text-align: center; }
         #ggb #config-tiles { width: 100%; border-spacing: 0 1vw; }
         #ggb #config-tiles tr { }
-        #ggb #config-tiles tr > * { padding: 5px 20px; }
+        #ggb #config-tiles tr > * { padding: 10px 15px; }
         #ggb #config-tiles tr > *:first-child { border-radius: 25px 0 0 25px; padding-left: 30px; }
-        #ggb #config-tiles tr > *:last-child { border-radius: 0 25px 25px 0; padding-right: 30px; }
-        #ggb #config-tiles td { background-color: #F2A561; }
+        #ggb #config-tiles tr > *:last-child { border-radius: 0 25px 25px 0; padding-right: 30px; width: 100%; }
+        #ggb #config-tiles td { }
         #ggb #config-tiles td > * { vertical-align: middle; }
         #ggb #config-tiles th.min { width: 1%; }
-        #ggb #config-tiles .remove { height: 20px; width: 20px; background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
         #ggb #config-tiles input[name=title] { width: 90%; border-radius: 25px; border: none; padding: 5px 30px; background-color: #f1d2b8; }
-        #ggb #config-tiles input[name=free] { display: none; }
-        #ggb #config-tiles input[name=free] ~ .free-icon { display: inline-block; width: 20px; height: 20px; background-color: #f1d2b8; }
-        #ggb #config-tiles input[name=free]:checked ~ .free-icon { background-image: url('images/icons8-checkmark-50.svg'); background-size: contain; }
         #ggb #config-actions { padding: 15px; }
 
         #ggb #share-wrapper { background-color: #F2A561; padding: 5px 10px; }
@@ -86,6 +92,7 @@
         <div id="header-bar">
             <img id="gg-logo" src="images/gg_logo.png" />
             <img id="bingo-logo" src="images/bingo_logo.png" />
+            <span id="config-name" class="hidden"></span>
             <span id="header-menu">
                 <img id="btn-menu" src="images/icons8-menu-vertical-50.png" />
             </span>
@@ -103,25 +110,27 @@
         </div>
         <div id="config-wrapper" class="content-body">
             <div id="config-area">
+                <div>
+                    <input name="name" />
+                </div>
                 <table id="config-tiles-template" class="template">
                     <tr class="template">
-                        <td class="controls"><img class="remove" src="images/icons8-delete-50.svg" /></td>
-                        <td class="free"><input name="free" type="checkbox" /><label for="" class="free-icon"></label></td>
+                        <td class="controls"><img class="img-delete remove" /></td>
+                        <td class="free"><input name="free" type="checkbox" class="img-checkbox img-grid" /><label for=""></label></td>
                         <td class="title"><input name="title" /></td>
                     </tr>
                 </table>
                 <table id="config-tiles">
-                    <tr>
+                    <tr class="hidden">
                         <th class="min"><img src="images/icons8-remove-30.svg" /></th>
-                        <th class="min"><img src="images/icon-grid-center-50.svg" height="30" /></th>
+                        <th class="min"><img src="images/icon-grid-center-50.svg" /></th>
                         <th>Text</th>
                     </tr>
                 </table>
-                <div><button id="btn-config-add" class="button">Add Row</button></div>
+                <div class="hidden"><button id="btn-config-add" class="button">Add Row</button></div>
                 <div class="hr"></div>
                 <div id="config-actions">
-                    <button id="btn-config-save" class="button">Save</button>
-                    <button id="btn-config-close" class="button">Cancel</button>
+                    <button id="btn-config-back" class="button">Back</button>
                 </div>
             </div>
         </div>
@@ -142,7 +151,8 @@
         var GGB = {};
 
         GGB.data = {
-            // { title: 'title', img: 'href://google.com/images/img.gif' }
+            name: 'Power Hour!',
+            //img: 'images/gg_bg.jpg',
             tiles: [
                 // Arin
                 { title: "Arin puts something in his mouth", free: true },
@@ -209,7 +219,7 @@
                 });
             },
             doToggleMenu: function (isShow) {
-                var popup = $('#header-menu-popup').toggle(isShow);
+                $('#header-menu-popup').toggle(isShow);
             },
             doShowAbout: function () {
                 GGB.page.doShowContentBody('#about-wrapper');
@@ -234,21 +244,35 @@
                 sender.classList.toggle('checked');
             },
             doShow: function () {
+                GGB.gameboard.doRefresh();
                 GGB.page.doShowContentBody('#gameboard-wrapper');
             },
             doRefresh: function () {
                 var board = $('#gameboard').empty();
 
-                // Duplicate tiles so we can remove as they are used
-                var availableTiles = $(GGB.data.tiles);
+                // Title
+                $('<th colspan="100%">').text(GGB.data.name).appendTo($('<tr>')).parent().appendTo(board);
 
-                // Get a random free tile
+                // Ignore tiles with no title
+                var availableTiles = $(GGB.data.tiles).filter((i, el) => !!el.title);
+
+                // Get normal tiles
+                var normalTiles = availableTiles.filter((i, el) => !el.free);
+
+                // Get free tiles
                 var freeTiles = availableTiles.filter((i, el) => !!el.free);
+
+                // Verify the board is valid
+                if (normalTiles.length < 24) {
+                    alert('Not enough normal tiles to create a board (required: 24, current: ' + normalTiles.length + ')');
+                }
+                if (freeTiles.length < 1) {
+                    alert('No free tiles (required: 1, current: ' + freeTiles.length + ')');
+                }
+
+                // Only keep one free tile
                 var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
-
-                // Remove free tiles
-                availableTiles = availableTiles.filter((i, el) => !el.free);
-
+                
                 // Build board
                 for (var r = 0; r < 5; r++) {
                     var tr = $('<tr>').appendTo(board);
@@ -259,8 +283,8 @@
                             val = freeTile[0];
                         } else {
                             // Pop out a random element from the available tiles
-                            var valIndex = Math.floor(Math.random() * availableTiles.length);
-                            val = availableTiles.splice(valIndex, 1)[0];
+                            var valIndex = Math.floor(Math.random() * normalTiles.length);
+                            val = normalTiles.splice(valIndex, 1)[0];
                         }
                         var td = $('<td>', { text: val.title }).data('item', val).appendTo(tr);
                     }
@@ -271,14 +295,18 @@
         GGB.configTiles = {
             init: function () {
                 // Attach action handlers
-                $('#btn-config-save').on('click', function () {
-                    GGB.configTiles.doSave();
-                });
-                $('#btn-config-close').on('click', function () {
+                $('#btn-config-back').on('click', function () {
                     GGB.gameboard.doShow();
                 });
                 $('#btn-config-add').on('click', function () {
                     GGB.configTiles.doAdd();
+                });
+                $('#config-area').on('change', '[name=free]', function () {
+                    GGB.configTiles.doSaveAll();
+                });
+                $('#config-area').on('change', '[name=name], [name=title]', function () {
+                    GGB.configTiles.doSaveAll();
+                    GGB.configTiles.doRefresh();
                 });
                 $('#config-tiles').on('click', '.remove', function () {
                     GGB.configTiles.doDelete($(this).closest('tr').data('item'));
@@ -294,10 +322,18 @@
                 GGB.page.doShowContentBody('#config-wrapper');
             },
             doRefresh: function () {
-                var tblTemplate = $('#config-tiles-template');
-                var tbl = $('#config-tiles');
+                // Build name
+                $('[name=name]').val(GGB.data.name);
+                $('#config-name').text(GGB.data.name);
+
+                // Always include a new tile as the last entry
+                if (!!GGB.data.tiles[GGB.data.tiles.length-1].title) {
+                  GGB.data.tiles.push({});
+                }
 
                 // Build tiles
+                var tbl = $('#config-tiles');
+                var tblTemplate = $('#config-tiles-template');
                 tbl.find('td').parent().remove();
                 $(GGB.data.tiles).each(function (i, el) {
                     var freeId = 'free-' + i;
@@ -316,7 +352,11 @@
                 GGB.data.tiles.push({});
                 GGB.configTiles.doRefresh();
             },
-            doSave: function () {
+            doSaveAll: function () {
+                // Save name
+                GGB.data.name = $('[name=name]').val();
+
+                // Save tiles
                 var tbl = $('#config-tiles');
                 var dataEls = tbl.find(':input');
                 var tileValuesNew = [];
@@ -328,8 +368,6 @@
                 });
                 //console.log(dataEls, tileValuesNew, GGB.tilesValues);
                 GGB.data.tiles = tileValuesNew;
-                GGB.gameboard.doShow();
-                GGB.gameboard.doRefresh();
             },
             doShare: function () {
                 // Generate share info
@@ -352,7 +390,7 @@
             },
             doExport: function () {
                 // Convert data to base64
-                return btoa(JSON.stringify(GGB.data.tiles));
+                return btoa(JSON.stringify(GGB.data));
             },
             doLoad: function () {
                 // Convert data from base64 in query string
@@ -360,7 +398,7 @@
                 var customboard64 = params.get('customboard');
                 if (!!customboard64) {
                     try {
-                        GGB.data.tiles = JSON.parse(atob(customboard64));
+                        GGB.data = JSON.parse(atob(customboard64));
                     } catch (e) {
                         console.error(e);
                         alert('Failed to load custom board');
