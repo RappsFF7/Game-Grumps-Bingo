@@ -10,7 +10,9 @@
         html { touch-action: manipulation; }
         html,
         html button,
-        html input { font-size: 2vh; font-family: 'B612', sans-serif; }
+        html input,
+        html select,
+        html option { font-size: 2vh; font-family: 'B612', sans-serif; }
 
         .color-bg-orange { background-color: #F39450; }
         .color-bg-orange-lighter { background-color: #F2A561; }
@@ -23,6 +25,8 @@
         .ul-nostyle > li { padding: 0; margin: 0; list-style: none; }
         .hr { border-top: 1px solid #f1d2b8; margin: 5px; }
         .button { background-color: #F2A561; color: black; border: none; border-radius: 5vw; padding: 1vw 3vw; }
+        .select-button { background: none; border: none; }
+        .select-button.single { background: none; -webkit-appearance: none; border: none; }
 
         #ggb { padding: 0; margin: 0; }
 
@@ -38,6 +42,8 @@
         #ggb .icon-checkbox.icon-grid:checked ~ label { background-image: url('images/icons8-squared-menu-center-50.png'); }
         #ggb .icon-checkbox.icon-lock ~ label { background-image: url('images/icons8-lock-open-50.png'); }
         #ggb .icon-checkbox.icon-lock:checked ~ label { background-image: url('images/icons8-lock-50.png'); }
+        #ggb .icon-checkbox.icon-dot ~ label { background-image: url('images/icons8-circle-filled-50.png'); }
+        #ggb .icon-checkbox.icon-dot:checked ~ label { background-image: url('images/icons8-circle-50.png'); }
 
         #ggb .edit-list { width: 100%; border-spacing: 0 1vw; }
         #ggb .edit-list tr { }
@@ -79,6 +85,7 @@
         #ggb #gameboard tr > th { height: auto; }
         #ggb #gameboard tr > * { background: white; text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
         #ggb #gameboard td.checked { background: rgba(255,255,255,0.5); text-shadow: -2px 2px white, 1px -1px white; }
+        #ggb #gameboard #gameboard-name { background: none; }
 
         #ggb #config-wrapper { margin-bottom: 15px; }
         #ggb #config-area { padding: 25px; }
@@ -118,7 +125,16 @@
             </div>
         </div>
         <div id="gameboard-wrapper" class="content-body">
-            <table id="gameboard"></table>
+            <table id="gameboard">
+                <thead>
+                    <tr>
+                        <th colspan="100%">
+                            <select id="gameboard-name" class="select-button"></select>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
         <div id="config-wrapper" class="content-body">
             <div id="config-area">
@@ -160,6 +176,7 @@
                     <tr class="template">
                         <td><img class="icon icon-delete remove" /></td>
                         <td class="hidden"><input name="lock" type="checkbox" class="icon icon-checkbox icon-lock" /><label for=""></label></td>
+                        <td class="hidden"><input name="default" type="radio" class="icon icon-checkbox icon-dot" /><label for=""></label></td>
                         <td><img class="icon icon-load load" /></td>
                         <td class="name"><input name="name" /></td>
                     </tr>
@@ -241,56 +258,70 @@
         };
 
         GGB.gameboard = {
-            data: {
-                name: 'Power Hour!',
-                //img: 'images/gg_bg.jpg',
-                tiles: [
-                    // Arin
-                    { title: "Arin puts something in his mouth", free: true },
-                    { title: "Arin wins" },
-                    { title: "Arin breaks something" },
-                    { title: "Arin drools" },
-                    { title: "Arin gets something thrown at him" },
-
-                    // Dan
-                    { title: "Dan wins" },
-                    { title: "Dan ties his hair up" },
-                    { title: "Dan leans on arin laughing" },
-                    { title: "Dan mentions a band" },
-                    { title: "Dan blank stare" },
-
-                    // Others
-                    { title: "Suzy!" },
-                    { title: "Ross!" },
-                    { title: "Allie!" },
-                    { title: "Reluctant participant" },
-                    { title: "Guest grumps" },
-
-                    // Situation
-                    { title: "Sticky substance on face" },
-                    { title: "Belly Reveal" },
-                    { title: "Singing together" },
-                    { title: "Someone in pain" },
-                    { title: "The cheese is mentioned" },
-                    { title: "Item not used for inteneded purpose" },
-                    { title: "Crew asked a question" },
-
-                    // Episodic
-                    { title: "Out of the office" },
-                    { title: "Versus Episode" },
-                    { title: "Table is messed up" }
-                ]
-            },
+            data: {},
 
             init: function () {
-                // Attach board tile click events to toggle
+                // Events
+                $('#gameboard').on('change', '#gameboard-name', function () {
+                    GGB.savedBoards.data.forEach(el => el.default = false);
+                    GGB.gameboard.data = $(this).find(':selected').data('item');
+                    GGB.gameboard.data.default = true;
+                    GGB.savedBoards.doSave(GGB.gameboard.data);
+                    GGB.gameboard.doRefreshBody();
+                });
                 $('#gameboard').on('click', 'td', function () {
                     GGB.gameboard.doToggleSquare(this);
                 });
 
                 // Rebuild board
-                GGB.gameboard.doRefresh();
                 GGB.gameboard.doShow();
+            },
+            getDefaultTile: function () {
+                return {
+                    title: "Arin does something"
+                };
+            },
+            getDefaultBoard: function () {
+                return {
+                    name: 'Power Hour!',
+                    //img: 'images/gg_bg.jpg',
+                    tiles: [
+                        // Arin
+                        { title: "Arin puts something in his mouth", free: true },
+                        { title: "Arin wins" },
+                        { title: "Arin breaks something" },
+                        { title: "Arin drools" },
+                        { title: "Arin gets something thrown at him" },
+
+                        // Dan
+                        { title: "Dan wins" },
+                        { title: "Dan ties his hair up" },
+                        { title: "Dan leans on arin laughing" },
+                        { title: "Dan mentions a band" },
+                        { title: "Dan blank stare" },
+
+                        // Others
+                        { title: "Suzy!" },
+                        { title: "Ross!" },
+                        { title: "Allie!" },
+                        { title: "Reluctant participant" },
+                        { title: "Guest grumps" },
+
+                        // Situation
+                        { title: "Sticky substance on face" },
+                        { title: "Belly Reveal" },
+                        { title: "Singing together" },
+                        { title: "Someone in pain" },
+                        { title: "The cheese is mentioned" },
+                        { title: "Item not used for inteneded purpose" },
+                        { title: "Crew asked a question" },
+
+                        // Episodic
+                        { title: "Out of the office" },
+                        { title: "Versus Episode" },
+                        { title: "Table is messed up" }
+                    ]
+                };
             },
             doToggleSquare: function (sender) {
                 sender.classList.toggle('checked');
@@ -304,13 +335,30 @@
                 GGB.gameboard.doRefresh();
             },
             doRefresh: function () {
-                var board = $('#gameboard').empty();
-
                 // Title
-                $('<th colspan="100%">').text(GGB.gameboard.data.name).appendTo($('<tr>')).parent().appendTo(board);
+                var titleList = $('#gameboard-name').empty();
+                var boardList = GGB.savedBoards.data.filter(v => !!v.name);
 
+                // If a loaded board is not saved, add it to the dropdown 
+                // FIX: Is lost if you switch boards and return to the gameboard
+                if (GGB.gameboard.data && GGB.gameboard.data.name && boardList.filter(el => el.name == GGB.gameboard.data.name).length == 0) {
+                    boardList.unshift(GGB.gameboard.data);
+                }
+                // If no board is loaded, load default saved board
+                else if (!GGB.gameboard.data) {
+                    boardList.filter(el => !!el.default).forEach(el => GGB.gameboard.data = el);
+                }
+
+                boardList.forEach(el => $('<option>').text(el.name).prop('selected', (el.name == GGB.gameboard.data.name)).data('item', el).appendTo(titleList));
+                titleList.toggleClass('single', (boardList.length <= 1));
+                GGB.gameboard.data = titleList.find(':selected').data('item');
+
+                // Grid
+                GGB.gameboard.doRefreshBody();
+            },
+            doRefreshBody: function () {
                 // Ignore tiles with no title
-                var availableTiles = $(GGB.gameboard.data.tiles).filter((i, el) => !!el.title);
+                var availableTiles = (GGB.gameboard.data ? $(GGB.gameboard.data.tiles).filter((i, el) => !!el.title) : []);
 
                 // Get normal tiles
                 var normalTiles = availableTiles.filter((i, el) => !el.free);
@@ -320,18 +368,19 @@
 
                 // Verify the board is valid
                 if (normalTiles.length < 24) {
-                    alert('Not enough normal tiles to create a board (required: 24, current: ' + normalTiles.length + ')');
+                    alert('Not enough normal tiles to create a board (required: 24, current: ' + normalTiles.length + ')'); return;
                 }
                 if (freeTiles.length < 1) {
-                    alert('No free tiles (required: 1, current: ' + freeTiles.length + ')');
+                    alert('No free tiles (required: 1, current: ' + freeTiles.length + ')'); return;
                 }
 
                 // Only keep one free tile
                 var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
-                
+
                 // Build board
+                var boardBody = $('#gameboard tbody').empty();
                 for (var r = 0; r < 5; r++) {
-                    var tr = $('<tr>').appendTo(board);
+                    var tr = $('<tr>').appendTo(boardBody);
                     for (var c = 0; c < 5; c++) {
                         var val = undefined;
                         if (!!freeTile && r == 2 && c == 2) {
@@ -370,9 +419,6 @@
 
                 // Load custom board
                 GGB.configTiles.doLoadUrl();
-
-                // Build customize area
-                GGB.configTiles.doRefresh();
             },
             doShow: function () {
                 GGB.configTiles.doRefresh();
@@ -386,8 +432,8 @@
                 $('#config-name').text(boardData.name);
 
                 // Always include a new tile as the last entry
-                if (!!boardData.tiles[boardData.tiles.length-1].title) {
-                    boardData.tiles.push({});
+                if (boardData.tiles.length == 0 || !!boardData.tiles[boardData.tiles.length - 1].title) {
+                    boardData.tiles.push($.extend(GGB.gameboard.getDefaultTile(), { title: '' }));
                 }
 
                 // Build tiles
@@ -463,11 +509,13 @@
             },
             doLoadUrl: function () {
                 // Convert data from base64 in query string
+                // TODO: Save historical list of loaded boards (separate from saved boards, but give option to save)
                 var params = new URLSearchParams(window.location.search);
                 var customboard64 = params.get('customboard');
                 if (!!customboard64) {
                     try {
-                        GGB.gameboard.doLoad(JSON.parse(atob(customboard64)));
+                        var data = JSON.parse(atob(customboard64));
+                        GGB.gameboard.doLoad(data);
                     } catch (e) {
                         console.error(e);
                         alert('Failed to load custom board');
@@ -477,7 +525,7 @@
         };
 
         GGB.savedBoards = {
-            // { name: 'Default', saved, false, tiles: {} }
+            // { name: 'Default', saved: false, default: false, tiles: {} }
             data: [],
 
             init: function () {
@@ -490,9 +538,14 @@
                         GGB.savedBoards.doSaveLocal();
                     }
                 });
-                $('#saved-boards-area').on('click', '[name=lock]', function () {
+                $('#saved-boards-area').on('change', '[name=lock]', function () {
                     var entry = $(this).closest('tr').data('item');
                     entry.locked = !entry.locked;
+                    GGB.savedBoards.doSaveLocal();
+                });
+                $('#saved-boards-area').on('change', '[name=default]', function () {
+                    var entry = $(this).closest('tr').data('item');
+                    entry.default = $(this).prop('checked');
                     GGB.savedBoards.doSaveLocal();
                 });
                 $('#saved-boards-area').on('click', '.load', function () {
@@ -503,6 +556,7 @@
                 $('#saved-boards-area').on('change', '[name=name]', function () {
                     var entry = $(this).closest('tr').data('item');
                     entry.name = $(this).val();
+                    GGB.savedBoards.doRefresh();
                     GGB.savedBoards.doSaveLocal();
                 });
                 $('#saved-boards-area').on('click', '#btn-back', function () {
@@ -513,11 +567,7 @@
                 GGB.savedBoards.doLoadLocal();
 
                 // Set default board
-                //GGB.savedBoards.data.unshift({ name: 'default', locked: true, data: GGB.gameboard.data });
-
-                // TEMP add fake entries for testing
-                //GGB.savedBoards.data.push({ name: 'default2', locked: false, data: GGB.gameboard.data });
-                //GGB.savedBoards.data.push({ name: 'default3', locked: false, data: GGB.gameboard.data });
+                GGB.savedBoards.data.filter(el => !!el.default).forEach(el => GGB.gameboard.data = el);
 
                 // Refresh list
                 GGB.savedBoards.doRefresh();
@@ -527,16 +577,25 @@
                 GGB.page.doShowContentBody('#saved-boards-wrapper');
             },
             doRefresh: function () {
+                var savedBoards = GGB.savedBoards.data;
+
+                // Always include a new tile as the last entry
+                if (!!savedBoards[savedBoards.length - 1].name) {
+                    savedBoards.push($.extend(GGB.gameboard.getDefaultBoard(), { name: '' }));
+                }
+
                 // Build tiles
                 var tbl = $('#saved-boards');
                 var tblBody = tbl.find('tbody');
                 var tblTemplate = $('#saved-boards-template');
                 tblBody.find('tr').remove();
-                $(GGB.savedBoards.data).each(function (i, el) {
+                $(savedBoards).each(function (i, el) {
                     var lockId = 'lock-' + i;
+                    var defaultId = 'default-' + i;
                     var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
                     tr.find('[name=name]').val(el.name);
                     tr.find('[name=lock]').attr('id', lockId).prop('checked', !!el.locked).data('index', i);
+                    tr.find('[name=default]').attr('id', defaultId).prop('checked', !!el.default).data('index', i);
                     tr.find('label').attr('for', lockId);
                     tr.appendTo(tblBody);
                 });
@@ -568,14 +627,14 @@
                 // Load saved gameboards from local storage
                 var dataStr = (localStorage.savedBoards ? atob(localStorage.savedBoards) : undefined)
                 var dataObj = (dataStr ? JSON.parse(dataStr) : undefined);
-                GGB.savedBoards.data = (dataObj ? dataObj : GGB.savedBoards.data);
+                GGB.savedBoards.data = (dataObj ? dataObj : [GGB.gameboard.getDefaultBoard()]);
             }
         };
 
-        GGB.page.init();
         GGB.savedBoards.init();
         GGB.configTiles.init();
         GGB.gameboard.init();
+        GGB.page.init();
     </script>
 </body>
 </html>
