@@ -6,30 +6,48 @@
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
     <link href="https://fonts.googleapis.com/css?family=B612&display=swap" rel="stylesheet">
     <style>
+        /* touch-action: manipulation; Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
         html { touch-action: manipulation; }
         html,
         html button,
         html input { font-size: 2vh; font-family: 'B612', sans-serif; }
-        /* Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
+
+        .color-bg-orange { background-color: #F39450; }
+        .color-bg-orange-lighter { background-color: #F2A561; }
+        .color-bg-orange-lightest { background-color: #f1d2b8; }
 
         .template { display: none; }
         .dialog { display: none; }
         .hidden { display: none; }
         .ul-nostyle { padding: 0; margin: 0; }
         .ul-nostyle > li { padding: 0; margin: 0; list-style: none; }
-
         .hr { border-top: 1px solid #f1d2b8; margin: 5px; }
-
-        .button { background-color: #F2A561; color: white; border: none; border-radius: 5vw; padding: 1vw 3vw; }
+        .button { background-color: #F2A561; color: black; border: none; border-radius: 5vw; padding: 1vw 3vw; }
 
         #ggb { padding: 0; margin: 0; }
 
-        #ggb .img-delete { height: 50px; width: 50px; background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
-        #ggb .img-checkbox { display: none; }
-        #ggb .img-checkbox ~ label { display: inline-block; height: 75px; width: 75px; background-image: url('images/icons8-toggle-off-50.png'); background-size: contain; }
-        #ggb .img-checkbox:checked ~ label { background-image: url('images/icons8-toggle-on-50.png'); }
-        #ggb .img-checkbox.img-grid ~ label { height: 50px; width: 50px; background-image: url('images/icons8-squared-menu-outer-50.png'); }
-        #ggb .img-checkbox.img-grid:checked ~ label { background-image: url('images/icons8-squared-menu-center-50.png'); }
+        #ggb .icon { height: 50px; width: 50px; }
+        #ggb .icon-delete { background-image: url('images/icons8-delete-50.svg'); background-size: contain; }
+        #ggb .icon-list { background-image: url('images/icons8-playlist-50.png'); }
+        #ggb .icon-load { background-image: url('images/icons8-reply-arrow-50.png'); }
+
+        #ggb .icon-checkbox { display: none; }
+        #ggb .icon-checkbox ~ label { display: inline-block; height: 50px; width: 50px; background-image: url('images/icons8-toggle-off-50.png'); background-size: contain; }
+        #ggb .icon-checkbox:checked ~ label { background-image: url('images/icons8-toggle-on-50.png'); }
+        #ggb .icon-checkbox.icon-grid ~ label { background-image: url('images/icons8-squared-menu-outer-50.png'); height: 75px; width: 75px; }
+        #ggb .icon-checkbox.icon-grid:checked ~ label { background-image: url('images/icons8-squared-menu-center-50.png'); }
+        #ggb .icon-checkbox.icon-lock ~ label { background-image: url('images/icons8-lock-open-50.png'); }
+        #ggb .icon-checkbox.icon-lock:checked ~ label { background-image: url('images/icons8-lock-50.png'); }
+
+        #ggb .edit-list { width: 100%; border-spacing: 0 1vw; }
+        #ggb .edit-list tr { }
+        #ggb .edit-list tr > * { padding: 10px 15px; }
+        #ggb .edit-list tr > *:first-child { border-radius: 25px 0 0 25px; padding-left: 30px; }
+        #ggb .edit-list tr > *:last-child { border-radius: 0 25px 25px 0; padding-right: 30px; width: 100%; }
+        #ggb .edit-list td { }
+        #ggb .edit-list td > * { vertical-align: middle; }
+        #ggb .edit-list th.min { width: 1%; }
+        #ggb .edit-list input { width: 90%; border-radius: 25px; border: none; padding: 5px 30px; background-color: #f1d2b8; }
 
         #ggb #background { position: fixed; height: 100vh; width: 100vw; background: url('images/gg_bg.jpg'); background-size: cover; }
         /*#ggb #background > * { position: absolute; height: 100%; width: 100%; }
@@ -39,8 +57,8 @@
         #ggb #content { position: relative; text-align: center; user-select: none; }
         #ggb #content table { display: inline-table; }
         #ggb #content table.template { display: none; }
-        #ggb #content .content-body { display: none; box-shadow: 0 0 10px black; }
-        #ggb #content #gameboard-wrapper.content-body { box-shadow: none; }
+        #ggb #content .content-body { display: none; box-shadow: 0 0 10px black; background-color: #F39450; }
+        #ggb #content #gameboard-wrapper.content-body { box-shadow: none; background-color: transparent; }
 
         #ggb #header-bar { background-color: #F39450; text-align: left; padding: 1vh; margin-bottom: 4vh; box-shadow: 0 0 10px black; }
         #ggb #header-bar > * { vertical-align: middle; }
@@ -60,27 +78,19 @@
         #ggb #gameboard { table-layout: fixed; border-collapse: collapse; object-fit: contain; box-shadow: 0 0 10px black; }
         #ggb #gameboard tr > th { height: auto; }
         #ggb #gameboard tr > * { background: white; text-align: center; padding: 5px; width: 10vh; height: 10vh; font-size: 2vh; border: solid 2px black; }
-        /*#ggb #gameboard td.checked { background: url('images/gg_dot.png'); background-size: 10px; color: white; }*/
         #ggb #gameboard td.checked { background: rgba(255,255,255,0.5); text-shadow: -2px 2px white, 1px -1px white; }
 
         #ggb #config-wrapper { margin-bottom: 15px; }
-        #ggb #config-area { background-color: #F39450; padding: 25px; }
-        #ggb #config-area input[name=name] { width: 90%; border: none; background-color: transparent; text-align: center; }
-        #ggb #config-tiles { width: 100%; border-spacing: 0 1vw; }
-        #ggb #config-tiles tr { }
-        #ggb #config-tiles tr > * { padding: 10px 15px; }
-        #ggb #config-tiles tr > *:first-child { border-radius: 25px 0 0 25px; padding-left: 30px; }
-        #ggb #config-tiles tr > *:last-child { border-radius: 0 25px 25px 0; padding-right: 30px; width: 100%; }
-        #ggb #config-tiles td { }
-        #ggb #config-tiles td > * { vertical-align: middle; }
-        #ggb #config-tiles th.min { width: 1%; }
-        #ggb #config-tiles input[name=title] { width: 90%; border-radius: 25px; border: none; padding: 5px 30px; background-color: #f1d2b8; }
-        #ggb #config-actions { padding: 15px; }
+        #ggb #config-area { padding: 25px; }
+        #ggb #config-area input[name=name] { text-align: center; }
 
-        #ggb #share-wrapper { background-color: #F2A561; padding: 5px 10px; }
+        #ggb #saved-boards-wrapper {}
+        #ggb #saved-boards-area { padding: 25px; }
+
+        #ggb #share-wrapper { padding: 5px 10px; }
         #ggb #share-wrapper #lnkShare { background-color: #f1d2b8; display: inline-block; padding: 0.5em 1em; margin: 1em; border-radius: 2em; }
         
-        #ggb #about-wrapper { background-color: #F2A561; padding: 5px 10px; }
+        #ggb #about-wrapper { padding: 5px 10px; }
     </style>
 </head>
 <body id="ggb">
@@ -100,8 +110,10 @@
                 <ul class="ul-nostyle">
                     <li id="btn-menu-back"><img src="images/icons8-menu-vertical-50.png" />
                     <li id="btn-config"><img src="images/icons8-settings-50.svg" />Config
-                    <li id="btn-share"><img src="images/icons8-share-30.svg" />Share&nbsp;
-                    <li id="btn-about"><img src="images/icons8-info-50.svg" />About&nbsp;
+                    <li id="btn-saved"><img src="images/icons8-playlist-50.png" />Saved
+                    <li id="btn-share"><img src="images/icons8-share-30.svg" />Share
+                    <li id="btn-reset"><img src="images/icons8-reset-50.png" />Reset
+                    <li id="btn-about"><img src="images/icons8-info-50.svg" />About
                 </ul>
             </div>
         </div>
@@ -110,28 +122,62 @@
         </div>
         <div id="config-wrapper" class="content-body">
             <div id="config-area">
-                <div>
-                    <input name="name" />
-                </div>
                 <table id="config-tiles-template" class="template">
                     <tr class="template">
-                        <td class="controls"><img class="img-delete remove" /></td>
-                        <td class="free"><input name="free" type="checkbox" class="img-checkbox img-grid" /><label for=""></label></td>
+                        <td class="controls"><img class="icon icon-delete remove" /></td>
+                        <td class="free"><input name="free" type="checkbox" class="icon icon-checkbox icon-grid" /><label for=""></label></td>
                         <td class="title"><input name="title" /></td>
                     </tr>
                 </table>
-                <table id="config-tiles">
-                    <tr class="hidden">
-                        <th class="min"><img src="images/icons8-remove-30.svg" /></th>
-                        <th class="min"><img src="images/icon-grid-center-50.svg" /></th>
-                        <th>Text</th>
+                <table id="config-tiles" class="edit-list">
+                    <thead>
+                        <tr>
+                            <th colspan="100%">Configure Gameboard</th>
+                        </tr>
+                        <tr>
+                            <th colspan="100%"><input name="name" /></th>
+                        </tr>
+                        <tr class="hidden">
+                            <th class="min"><img src="images/icons8-remove-30.svg" /></th>
+                            <th class="min"><img src="images/icon-grid-center-50.svg" /></th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr><td colspan="100%"><div class="hr"></div></td></tr>
+                        <tr>
+                            <td colspan="100%" class="hidden"><button id="btn-config-add" class="button">Add Row</button></td>
+                            <td colspan="100%"><button id="btn-config-back" class="button">Back</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div id="saved-boards-wrapper" class="content-body">
+            <div id="saved-boards-area">
+                <table id="saved-boards-template" class="template">
+                    <tr class="template">
+                        <td><img class="icon icon-delete remove" /></td>
+                        <td class="hidden"><input name="lock" type="checkbox" class="icon icon-checkbox icon-lock" /><label for=""></label></td>
+                        <td><img class="icon icon-load load" /></td>
+                        <td class="name"><input name="name" /></td>
                     </tr>
                 </table>
-                <div class="hidden"><button id="btn-config-add" class="button">Add Row</button></div>
-                <div class="hr"></div>
-                <div id="config-actions">
-                    <button id="btn-config-back" class="button">Back</button>
-                </div>
+                <table id="saved-boards" class="edit-list">
+                    <thead>
+                        <tr>
+                            <th colspan="100%">Saved Gameboards</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr><td colspan="100%"><div class="hr"></div></td></tr>
+                        <tr>
+                            <td colspan="100%"><button id="btn-back" class="button">Back</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
         <div id="share-wrapper" class="content-body">
@@ -150,51 +196,6 @@
     <script>
         var GGB = {};
 
-        GGB.data = {
-            name: 'Power Hour!',
-            //img: 'images/gg_bg.jpg',
-            tiles: [
-                // Arin
-                { title: "Arin puts something in his mouth", free: true },
-                { title: "Arin wins" },
-                { title: "Arin breaks something" },
-                { title: "Arin drools" },
-                { title: "Arin gets something thrown at him" },
-
-                // Dan
-                { title: "Dan wins" },
-                { title: "Dan ties his hair up" },
-                { title: "Dan leans on arin laughing" },
-                { title: "Dan mentions a band" },
-                { title: "Dan blank stare" },
-
-                // Others
-                { title: "Suzy!" },
-                { title: "Ross!" },
-                { title: "Allie!" },
-                { title: "Reluctant participant" },
-                { title: "Guest grumps" },
-
-                // Situation
-                { title: "Sticky substance on face" },
-                { title: "Belly Reveal" },
-                { title: "Singing together" },
-                { title: "Someone in pain" },
-                { title: "The cheese is mentioned" },
-                { title: "Item not used for inteneded purpose" },
-                { title: "Crew asked a question" },
-
-                // Episodic
-                { title: "Out of the office" },
-                { title: "Versus Episode" },
-                { title: "Table is messed up" }
-            ]
-        };
-
-        GGB.runtime = {
-            tiles: [[]]
-        };
-
         GGB.page = {
             init: function () {
                 // Attach events for header
@@ -209,9 +210,19 @@
                     GGB.configTiles.doShow();
                     GGB.page.doToggleMenu(false);
                 });
+                $('#btn-saved').on('click', function () {
+                    GGB.savedBoards.doShow();
+                    GGB.page.doToggleMenu(false);
+                });
                 $('#btn-share').on('click', function () {
                     GGB.configTiles.doShare();
                     GGB.page.doToggleMenu(false);
+                });
+                $('#btn-reset').on('click', function () {
+                    if (confirm("Reset will delete all saved gameboards and reload the page resetting the current config. Continue?")) {
+                        localStorage.clear();
+                        window.location = window.location.href.split('?')[0];
+                    }
                 });
                 $('#btn-about').on('click', function () {
                     GGB.page.doShowAbout();
@@ -230,6 +241,47 @@
         };
 
         GGB.gameboard = {
+            data: {
+                name: 'Power Hour!',
+                //img: 'images/gg_bg.jpg',
+                tiles: [
+                    // Arin
+                    { title: "Arin puts something in his mouth", free: true },
+                    { title: "Arin wins" },
+                    { title: "Arin breaks something" },
+                    { title: "Arin drools" },
+                    { title: "Arin gets something thrown at him" },
+
+                    // Dan
+                    { title: "Dan wins" },
+                    { title: "Dan ties his hair up" },
+                    { title: "Dan leans on arin laughing" },
+                    { title: "Dan mentions a band" },
+                    { title: "Dan blank stare" },
+
+                    // Others
+                    { title: "Suzy!" },
+                    { title: "Ross!" },
+                    { title: "Allie!" },
+                    { title: "Reluctant participant" },
+                    { title: "Guest grumps" },
+
+                    // Situation
+                    { title: "Sticky substance on face" },
+                    { title: "Belly Reveal" },
+                    { title: "Singing together" },
+                    { title: "Someone in pain" },
+                    { title: "The cheese is mentioned" },
+                    { title: "Item not used for inteneded purpose" },
+                    { title: "Crew asked a question" },
+
+                    // Episodic
+                    { title: "Out of the office" },
+                    { title: "Versus Episode" },
+                    { title: "Table is messed up" }
+                ]
+            },
+
             init: function () {
                 // Attach board tile click events to toggle
                 $('#gameboard').on('click', 'td', function () {
@@ -247,14 +299,18 @@
                 GGB.gameboard.doRefresh();
                 GGB.page.doShowContentBody('#gameboard-wrapper');
             },
+            doLoad: function (data) {
+                GGB.gameboard.data = data;
+                GGB.gameboard.doRefresh();
+            },
             doRefresh: function () {
                 var board = $('#gameboard').empty();
 
                 // Title
-                $('<th colspan="100%">').text(GGB.data.name).appendTo($('<tr>')).parent().appendTo(board);
+                $('<th colspan="100%">').text(GGB.gameboard.data.name).appendTo($('<tr>')).parent().appendTo(board);
 
                 // Ignore tiles with no title
-                var availableTiles = $(GGB.data.tiles).filter((i, el) => !!el.title);
+                var availableTiles = $(GGB.gameboard.data.tiles).filter((i, el) => !!el.title);
 
                 // Get normal tiles
                 var normalTiles = availableTiles.filter((i, el) => !el.free);
@@ -302,7 +358,7 @@
                     GGB.configTiles.doAdd();
                 });
                 $('#config-area').on('change', '[name=free]', function () {
-                    GGB.configTiles.doSaveAll();
+                    GGB.configTiles.doToggleFree($(this).closest('tr').data('item'));
                 });
                 $('#config-area').on('change', '[name=name], [name=title]', function () {
                     GGB.configTiles.doSaveAll();
@@ -313,48 +369,60 @@
                 });
 
                 // Load custom board
-                GGB.configTiles.doLoad();
+                GGB.configTiles.doLoadUrl();
 
                 // Build customize area
                 GGB.configTiles.doRefresh();
             },
             doShow: function () {
+                GGB.configTiles.doRefresh();
                 GGB.page.doShowContentBody('#config-wrapper');
             },
             doRefresh: function () {
+                var boardData = GGB.gameboard.data;
+
                 // Build name
-                $('[name=name]').val(GGB.data.name);
-                $('#config-name').text(GGB.data.name);
+                $('#config-area').find('[name=name]').val(boardData.name);
+                $('#config-name').text(boardData.name);
 
                 // Always include a new tile as the last entry
-                if (!!GGB.data.tiles[GGB.data.tiles.length-1].title) {
-                  GGB.data.tiles.push({});
+                if (!!boardData.tiles[boardData.tiles.length-1].title) {
+                    boardData.tiles.push({});
                 }
 
                 // Build tiles
                 var tbl = $('#config-tiles');
+                var tblBody = tbl.find('tbody');
                 var tblTemplate = $('#config-tiles-template');
-                tbl.find('td').parent().remove();
-                $(GGB.data.tiles).each(function (i, el) {
+                tblBody.find('tr').remove();
+                $(boardData.tiles).each(function (i, el) {
                     var freeId = 'free-' + i;
                     var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
                     tr.find('[name=title]').val(el.title).data('index', i);
                     tr.find('[name=free]').attr('id', freeId).prop('checked', !!el.free).data('index', i);
                     tr.find('label').attr('for', freeId);
-                    tr.appendTo(tbl.find('tbody'));
+                    tr.appendTo(tblBody);
                 });
             },
             doDelete: function (entry) {
-                GGB.data.tiles = GGB.data.tiles.filter(el => el.title != entry.title);
+                var boardData = GGB.gameboard.data;
+                boardData.tiles = boardData.tiles.filter(el => el.title != entry.title);
+                GGB.savedBoards.doSave(boardData);
                 GGB.configTiles.doRefresh();
             },
+            doToggleFree: function (entry) {
+                entry.free = !entry.free;
+                GGB.savedBoards.doSave(GGB.gameboard.data);
+            },
             doAdd: function () {
-                GGB.data.tiles.push({});
+                GGB.gameboard.data.tiles.push({});
                 GGB.configTiles.doRefresh();
             },
             doSaveAll: function () {
+                var boardData = GGB.gameboard.data;
+
                 // Save name
-                GGB.data.name = $('[name=name]').val();
+                boardData.name = $('[name=name]').val();
 
                 // Save tiles
                 var tbl = $('#config-tiles');
@@ -367,7 +435,8 @@
                     tileValue[o.attr('name')] = val;
                 });
                 //console.log(dataEls, tileValuesNew, GGB.tilesValues);
-                GGB.data.tiles = tileValuesNew;
+                boardData.tiles = tileValuesNew;
+                GGB.savedBoards.doSave(boardData);
             },
             doShare: function () {
                 // Generate share info
@@ -390,15 +459,15 @@
             },
             doExport: function () {
                 // Convert data to base64
-                return btoa(JSON.stringify(GGB.data));
+                return btoa(JSON.stringify(GGB.gameboard.data));
             },
-            doLoad: function () {
+            doLoadUrl: function () {
                 // Convert data from base64 in query string
                 var params = new URLSearchParams(window.location.search);
                 var customboard64 = params.get('customboard');
                 if (!!customboard64) {
                     try {
-                        GGB.data = JSON.parse(atob(customboard64));
+                        GGB.gameboard.doLoad(JSON.parse(atob(customboard64)));
                     } catch (e) {
                         console.error(e);
                         alert('Failed to load custom board');
@@ -407,7 +476,104 @@
             }
         };
 
+        GGB.savedBoards = {
+            // { name: 'Default', saved, false, tiles: {} }
+            data: [],
+
+            init: function () {
+                // Events
+                $('#saved-boards-area').on('click', '.remove', function () {
+                    if (confirm("Are you sure you want to delete this gameboard?")) {
+                        var entry = $(this).closest('tr').data('item');
+                        GGB.savedBoards.data = GGB.savedBoards.data.filter(el => el.name != entry.name);
+                        GGB.savedBoards.doRefresh();
+                        GGB.savedBoards.doSaveLocal();
+                    }
+                });
+                $('#saved-boards-area').on('click', '[name=lock]', function () {
+                    var entry = $(this).closest('tr').data('item');
+                    entry.locked = !entry.locked;
+                    GGB.savedBoards.doSaveLocal();
+                });
+                $('#saved-boards-area').on('click', '.load', function () {
+                    var entry = $(this).closest('tr').data('item');
+                    GGB.gameboard.doLoad(entry);
+                    GGB.gameboard.doShow();
+                });
+                $('#saved-boards-area').on('change', '[name=name]', function () {
+                    var entry = $(this).closest('tr').data('item');
+                    entry.name = $(this).val();
+                    GGB.savedBoards.doSaveLocal();
+                });
+                $('#saved-boards-area').on('click', '#btn-back', function () {
+                    GGB.gameboard.doShow();
+                });
+
+                // Load saved boards
+                GGB.savedBoards.doLoadLocal();
+
+                // Set default board
+                //GGB.savedBoards.data.unshift({ name: 'default', locked: true, data: GGB.gameboard.data });
+
+                // TEMP add fake entries for testing
+                //GGB.savedBoards.data.push({ name: 'default2', locked: false, data: GGB.gameboard.data });
+                //GGB.savedBoards.data.push({ name: 'default3', locked: false, data: GGB.gameboard.data });
+
+                // Refresh list
+                GGB.savedBoards.doRefresh();
+            },
+            doShow: function () {
+                GGB.savedBoards.doRefresh();
+                GGB.page.doShowContentBody('#saved-boards-wrapper');
+            },
+            doRefresh: function () {
+                // Build tiles
+                var tbl = $('#saved-boards');
+                var tblBody = tbl.find('tbody');
+                var tblTemplate = $('#saved-boards-template');
+                tblBody.find('tr').remove();
+                $(GGB.savedBoards.data).each(function (i, el) {
+                    var lockId = 'lock-' + i;
+                    var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
+                    tr.find('[name=name]').val(el.name);
+                    tr.find('[name=lock]').attr('id', lockId).prop('checked', !!el.locked).data('index', i);
+                    tr.find('label').attr('for', lockId);
+                    tr.appendTo(tblBody);
+                });
+            },
+            doSave: function (data) {
+                // Add or update a saved gameboard
+                var index = -1;
+                GGB.savedBoards.data.forEach((el, i) => {
+                    if (el.name == data.name) {
+                        index = i;
+                        return;
+                    }
+                });
+                if (index > -1) {
+                    GGB.savedBoards.data[index] = data;
+                } else {
+                    GGB.savedBoards.data.push(data);
+                }
+
+                // Update local storage
+                GGB.savedBoards.doSaveLocal();
+            },
+            doSaveLocal: function () {
+                // Save gameboards in local storage
+                var dataStr = btoa(JSON.stringify(GGB.savedBoards.data))
+                localStorage.savedBoards = dataStr;
+            },
+            doLoadLocal: function () {
+                // Load saved gameboards from local storage
+                var dataStr = (localStorage.savedBoards ? atob(localStorage.savedBoards) : undefined)
+                var dataObj = (dataStr ? JSON.parse(dataStr) : undefined);
+                GGB.savedBoards.data = (dataObj ? dataObj : GGB.savedBoards.data);
+            }
+        };
+
         GGB.page.init();
+        GGB.savedBoards.init();
         GGB.configTiles.init();
         GGB.gameboard.init();
     </script>
