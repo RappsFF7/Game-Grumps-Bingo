@@ -1,0 +1,498 @@
+var GGB = {
+    page: undefined,
+    gameboard: undefined,
+    configTiles: undefined,
+    savedBoards: undefined
+};
+
+GGB.page = {
+    init: function () {
+        // Attach events for header
+        $('#gg-logo, #bingo-logo').on('click', function () {
+            GGB.gameboard.doShow();
+            GGB.page.doToggleMenu(false);
+        });
+        $('#btn-menu, #btn-menu-back').on('click', function () {
+            GGB.page.doToggleMenu();
+        });
+        $('#btn-config').on('click', function () {
+            GGB.configTiles.doShow();
+            GGB.page.doToggleMenu(false);
+        });
+        $('#btn-saved').on('click', function () {
+            GGB.savedBoards.doShow();
+            GGB.page.doToggleMenu(false);
+        });
+        $('#btn-share').on('click', function () {
+            GGB.configTiles.doShare();
+            GGB.page.doToggleMenu(false);
+        });
+        $('#btn-reset').on('click', function () {
+            if (confirm("Reset will delete all saved gameboards and reload the page resetting the current config. Continue?")) {
+                localStorage.clear();
+                window.location = window.location.href.split('?')[0];
+            }
+        });
+        $('#btn-about').on('click', function () {
+            GGB.page.doShowAbout();
+            GGB.page.doToggleMenu(false);
+        });
+    },
+    doToggleMenu: function (isShow) {
+        $('#header-menu-popup').toggle(isShow);
+    },
+    doShowAbout: function () {
+        GGB.page.doShowContentBody('#about-wrapper');
+    },
+    doShowContentBody: function (contentBodyId) {
+        $('.content-body').hide().filter(contentBodyId).show();
+    }
+};
+
+GGB.gameboard = {
+    data: {},
+
+    init: function () {
+        // Events
+        $('#gameboard').on('change', '#gameboard-name', function () {
+            GGB.savedBoards.data.forEach(el => el.default = false);
+            GGB.gameboard.data = $(this).find(':selected').data('item');
+            GGB.gameboard.data.default = true;
+            GGB.savedBoards.doSave(GGB.gameboard.data);
+            GGB.gameboard.doRefreshBody();
+        });
+        $('#gameboard').on('click', 'td', function () {
+            GGB.gameboard.doToggleSquare(this);
+            GGB.gameboard.doWinCheck();
+        });
+        $('#win-wrapper').on('click', function () {
+            GGB.gameboard.doWin(false);
+        });
+
+        // Rebuild board
+        GGB.gameboard.doShow();
+    },
+    getDefaultTile: function () {
+        return {
+            title: "Arin does something"
+        };
+    },
+    getDefaultBoard: function () {
+        return {
+            name: 'Power Hour!',
+            //img: 'images/gg_bg.jpg',
+            tiles: [
+                // Arin
+                { title: "Arin puts something in his mouth", free: true },
+                { title: "Arin wins" },
+                { title: "Arin breaks something" },
+                { title: "Arin drools" },
+                { title: "Arin gets something thrown at him" },
+
+                // Dan
+                { title: "Dan wins" },
+                { title: "Dan ties his hair up" },
+                { title: "Dan leans on arin laughing" },
+                { title: "Dan mentions a band" },
+                { title: "Dan blank stare" },
+
+                // Others
+                { title: "Suzy!" },
+                { title: "Ross!" },
+                { title: "Allie!" },
+                { title: "Reluctant participant" },
+                { title: "Guest grumps" },
+
+                // Situation
+                { title: "Sticky substance on face" },
+                { title: "Belly Reveal" },
+                { title: "Singing together" },
+                { title: "Someone in pain" },
+                { title: "The cheese is mentioned" },
+                { title: "Item not used for inteneded purpose" },
+                { title: "Crew asked a question" },
+
+                // Episodic
+                { title: "Out of the office" },
+                { title: "Versus Episode" },
+                { title: "Table is messed up" }
+            ]
+        };
+    },
+    doToggleSquare: function (sender) {
+        sender.classList.toggle('checked');
+    },
+    doShow: function () {
+        GGB.gameboard.doRefresh();
+        GGB.page.doShowContentBody('#gameboard-wrapper');
+    },
+    doLoad: function (data) {
+        GGB.gameboard.data = data;
+        GGB.gameboard.doRefresh();
+    },
+    doRefresh: function () {
+        // Title
+        var titleList = $('#gameboard-name').empty();
+        var boardList = GGB.savedBoards.data.filter(v => !!v.name);
+
+        // If a loaded board is not saved, add it to the dropdown 
+        // FIX: Is lost if you switch boards and return to the gameboard
+        if (GGB.gameboard.data && GGB.gameboard.data.name && boardList.filter(el => el.name == GGB.gameboard.data.name).length == 0) {
+            boardList.unshift(GGB.gameboard.data);
+        }
+        // If no board is loaded, load default saved board
+        else if (!GGB.gameboard.data) {
+            boardList.filter(el => !!el.default).forEach(el => GGB.gameboard.data = el);
+        }
+
+        boardList.forEach(el => $('<option>').text(el.name).prop('selected', (el.name == GGB.gameboard.data.name)).data('item', el).appendTo(titleList));
+        titleList.toggleClass('single', (boardList.length <= 1));
+        GGB.gameboard.data = titleList.find(':selected').data('item');
+
+        // Grid
+        GGB.gameboard.doRefreshBody();
+    },
+    doRefreshBody: function () {
+        // Ignore tiles with no title
+        var availableTiles = (GGB.gameboard.data ? $(GGB.gameboard.data.tiles).filter((i, el) => !!el.title) : []);
+
+        // Get normal tiles
+        var normalTiles = availableTiles.filter((i, el) => !el.free);
+
+        // Get free tiles
+        var freeTiles = availableTiles.filter((i, el) => !!el.free);
+
+        // Verify the board is valid
+        if (normalTiles.length < 24) {
+            alert('Not enough normal tiles to create a board (required: 24, current: ' + normalTiles.length + ')'); return;
+        }
+        if (freeTiles.length < 1) {
+            alert('No free tiles (required: 1, current: ' + freeTiles.length + ')'); return;
+        }
+
+        // Only keep one free tile
+        var freeTile = freeTiles.splice(Math.floor(Math.random() * freeTiles.length), 1);
+
+        // Build board
+        var boardBody = $('#gameboard tbody').empty();
+        for (var r = 0; r < 5; r++) {
+            var tr = $('<tr>').appendTo(boardBody);
+            for (var c = 0; c < 5; c++) {
+                var val = undefined;
+                if (!!freeTile && r == 2 && c == 2) {
+                    // At the center, use a free tile
+                    val = freeTile[0];
+                } else {
+                    // Pop out a random element from the available tiles
+                    var valIndex = Math.floor(Math.random() * normalTiles.length);
+                    val = normalTiles.splice(valIndex, 1)[0];
+                }
+                var td = $('<td>', { text: val.title, class: 'clickable' }).data('item', val).appendTo(tr);
+            }
+        }
+    },
+    doWinCheck: function () {
+        var isWin = false;
+
+        var isChecked = function (el) { return $(el).is('.checked') }
+        var data = $('#gameboard td').map((i,el) => isChecked(el) ? 1 : 0);
+        
+        var boardSize = Math.sqrt(data.length);
+        var isBingo = function (arr, pos, dirX, dirY, checkedCount, codeBranch) {
+            var isBingoData = {
+                pos: pos,
+                dirX: dirX,
+                dirY: dirY,
+                checkedCount: checkedCount,
+                codeBranch: codeBranch
+            }
+            //console.log("isBingo", isBingoData);
+
+            // Bingo!
+            if (checkedCount == boardSize) return true
+
+            else {
+                // Out of board bounds
+                if (pos < 0 || pos > arr.length) return false;
+
+                // Board cell is unchecked
+                var val = arr[pos];
+                if (val == 0) {
+                    // We aren't on a potential path for bingo, so go to the next cell
+                    if (checkedCount == 0) {
+                        return isBingo(arr, (pos + 1), 0, 0, 0, 'walking board')
+                    }
+                    // We ARE on a potential path for bingo, return false
+                    else {
+                        return false;
+                    }
+                }
+                // Board cell is CHECKED
+                else {
+                    // We aren't on a potential path for bingo, so check all directions for bingo
+                    if (checkedCount == 0) {
+                        for (var y = -1; y <= 1; y++) {
+                            for (var x = -1; x <= 1; x++) {
+                                if (x + y == 0) continue;
+                                if (isBingo(arr, (pos + (x + y * boardSize)), x, y, 1, 'start potential bingo')) return true
+                            }
+                        }
+                    }
+                    // We ARE on a potential path for bingo, continue current direction
+                    else {
+                        return isBingo(arr, (pos + dirX + dirY * boardSize), dirX, dirY, (checkedCount + 1), 'checking for bingo');
+                    }
+                }
+            }
+        }
+        isWin = isBingo(data, 0, 0, 0, 0, 0, 'start');
+
+        if (isWin) {
+            GGB.gameboard.doWin(true);
+        }
+        return isWin;
+    },
+    doWin: function (isShow) {
+        $('#win-wrapper').toggleClass('hidden', !isShow);
+    }
+};
+
+GGB.configTiles = {
+    init: function () {
+        // Attach action handlers
+        $('#btn-config-back').on('click', function () {
+            GGB.gameboard.doShow();
+        });
+        $('#btn-config-add').on('click', function () {
+            GGB.configTiles.doAdd();
+        });
+        $('#config-area').on('change', '[name=free]', function () {
+            GGB.configTiles.doToggleFree($(this).closest('tr').data('item'));
+        });
+        $('#config-area').on('change', '[name=name], [name=title]', function () {
+            GGB.configTiles.doSaveAll();
+            GGB.configTiles.doRefresh();
+        });
+        $('#config-tiles').on('click', '.remove', function () {
+            GGB.configTiles.doDelete($(this).closest('tr').data('item'));
+        });
+
+        // Load custom board
+        GGB.configTiles.doLoadUrl();
+    },
+    doShow: function () {
+        GGB.configTiles.doRefresh();
+        GGB.page.doShowContentBody('#config-wrapper');
+    },
+    doRefresh: function () {
+        var boardData = GGB.gameboard.data;
+
+        // Build name
+        $('#config-area').find('[name=name]').val(boardData.name);
+        $('#config-name').text(boardData.name);
+
+        // Always include a new tile as the last entry
+        if (boardData.tiles.length == 0 || !!boardData.tiles[boardData.tiles.length - 1].title) {
+            boardData.tiles.push($.extend(GGB.gameboard.getDefaultTile(), { title: '' }));
+        }
+
+        // Build tiles
+        var tbl = $('#config-tiles');
+        var tblBody = tbl.find('tbody');
+        var tblTemplate = $('#config-tiles-template');
+        tblBody.find('tr').remove();
+        $(boardData.tiles).each(function (i, el) {
+            var freeId = 'free-' + i;
+            var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
+            tr.find('[name=title]').val(el.title).data('index', i);
+            tr.find('[name=free]').attr('id', freeId).prop('checked', !!el.free).data('index', i);
+            tr.find('label').attr('for', freeId);
+            tr.appendTo(tblBody);
+        });
+    },
+
+    doDelete: function (entry) {
+        var boardData = GGB.gameboard.data;
+        boardData.tiles = boardData.tiles.filter(el => el.title != entry.title);
+        GGB.savedBoards.doSave(boardData);
+        GGB.configTiles.doRefresh();
+    },
+    doToggleFree: function (entry) {
+        entry.free = !entry.free;
+        GGB.savedBoards.doSave(GGB.gameboard.data);
+    },
+    doAdd: function () {
+        GGB.gameboard.data.tiles.push({});
+        GGB.configTiles.doRefresh();
+    },
+    doSaveAll: function () {
+        var boardData = GGB.gameboard.data;
+
+        // Save name
+        boardData.name = $('[name=name]').val();
+
+        // Save tiles
+        var tbl = $('#config-tiles');
+        var dataEls = tbl.find(':input');
+        var tileValuesNew = [];
+        $(dataEls).each(function (i, el) {
+            var o = $(el);
+            var val = (o.is(':checkbox') ? o.prop('checked') : o.val());
+            var tileValue = tileValuesNew[o.data('index')] = (tileValuesNew[o.data('index')] || {});
+            tileValue[o.attr('name')] = val;
+        });
+        //console.log(dataEls, tileValuesNew, GGB.tilesValues);
+        boardData.tiles = tileValuesNew;
+        GGB.savedBoards.doSave(boardData);
+    },
+    doShare: function () {
+        // Generate share info
+        var customTitle = 'Game Grumps Bingo Custom Board';
+        var params = new URLSearchParams(window.location.search);
+        params.set('customboard', GGB.configTiles.doExport());
+        var shareUrl = window.location.href.split('?')[0] + '?' + params.toString();
+
+        // Share (mobile or desktop)
+        if (navigator.share) {
+            navigator.share({
+                title: customTitle,
+                url: shareUrl
+            });
+        } else {
+            var share = $('#share-wrapper');
+            share.find('#lnkShare').attr('href', shareUrl).text(customTitle);
+            GGB.page.doShowContentBody('#share-wrapper');
+        }
+    },
+    doExport: function () {
+        // Convert data to base64
+        return btoa(JSON.stringify(GGB.gameboard.data));
+    },
+    doLoadUrl: function () {
+        // Convert data from base64 in query string
+        // TODO: Save historical list of loaded boards (separate from saved boards, but give option to save)
+        var params = new URLSearchParams(window.location.search);
+        var customboard64 = params.get('customboard');
+        if (!!customboard64) {
+            try {
+                var data = JSON.parse(atob(customboard64));
+                GGB.gameboard.doLoad(data);
+            } catch (e) {
+                console.error(e);
+                alert('Failed to load custom board');
+            }
+        }
+    }
+};
+
+GGB.savedBoards = {
+    // { name: 'Default', saved: false, default: false, tiles: {} }
+    data: [],
+
+    init: function () {
+        // Events
+        $('#saved-boards-area').on('click', '.remove', function () {
+            if (confirm("Are you sure you want to delete this gameboard?")) {
+                var entry = $(this).closest('tr').data('item');
+                GGB.savedBoards.data = GGB.savedBoards.data.filter(el => el.name != entry.name);
+                GGB.savedBoards.doRefresh();
+                GGB.savedBoards.doSaveLocal();
+            }
+        });
+        $('#saved-boards-area').on('change', '[name=lock]', function () {
+            var entry = $(this).closest('tr').data('item');
+            entry.locked = !entry.locked;
+            GGB.savedBoards.doSaveLocal();
+        });
+        $('#saved-boards-area').on('change', '[name=default]', function () {
+            var entry = $(this).closest('tr').data('item');
+            entry.default = $(this).prop('checked');
+            GGB.savedBoards.doSaveLocal();
+        });
+        $('#saved-boards-area').on('click', '.load', function () {
+            var entry = $(this).closest('tr').data('item');
+            GGB.gameboard.doLoad(entry);
+            GGB.gameboard.doShow();
+        });
+        $('#saved-boards-area').on('change', '[name=name]', function () {
+            var entry = $(this).closest('tr').data('item');
+            entry.name = $(this).val();
+            GGB.savedBoards.doRefresh();
+            GGB.savedBoards.doSaveLocal();
+        });
+        $('#saved-boards-area').on('click', '#btn-back', function () {
+            GGB.gameboard.doShow();
+        });
+
+        // Load saved boards
+        GGB.savedBoards.doLoadLocal();
+
+        // Set default board
+        GGB.savedBoards.data.filter(el => !!el.default).forEach(el => GGB.gameboard.data = el);
+
+        // Refresh list
+        GGB.savedBoards.doRefresh();
+    },
+    doShow: function () {
+        GGB.savedBoards.doRefresh();
+        GGB.page.doShowContentBody('#saved-boards-wrapper');
+    },
+    doRefresh: function () {
+        var savedBoards = GGB.savedBoards.data;
+
+        // Always include a new tile as the last entry
+        if (!!savedBoards[savedBoards.length - 1].name) {
+            savedBoards.push($.extend(GGB.gameboard.getDefaultBoard(), { name: '' }));
+        }
+
+        // Build tiles
+        var tbl = $('#saved-boards');
+        var tblBody = tbl.find('tbody');
+        var tblTemplate = $('#saved-boards-template');
+        tblBody.find('tr').remove();
+        $(savedBoards).each(function (i, el) {
+            var lockId = 'lock-' + i;
+            var defaultId = 'default-' + i;
+            var tr = tblTemplate.find('tr.template').clone().removeClass('template').data('item', el);
+            tr.find('[name=name]').val(el.name);
+            tr.find('[name=lock]').attr('id', lockId).prop('checked', !!el.locked).data('index', i);
+            tr.find('[name=default]').attr('id', defaultId).prop('checked', !!el.default).data('index', i);
+            tr.find('label').attr('for', lockId);
+            tr.appendTo(tblBody);
+        });
+    },
+    doSave: function (data) {
+        // Add or update a saved gameboard
+        var index = -1;
+        GGB.savedBoards.data.forEach((el, i) => {
+            if (el.name == data.name) {
+                index = i;
+                return;
+            }
+        });
+        if (index > -1) {
+            GGB.savedBoards.data[index] = data;
+        } else {
+            GGB.savedBoards.data.push(data);
+        }
+
+        // Update local storage
+        GGB.savedBoards.doSaveLocal();
+    },
+    doSaveLocal: function () {
+        // Save gameboards in local storage
+        var dataStr = btoa(JSON.stringify(GGB.savedBoards.data))
+        localStorage.savedBoards = dataStr;
+    },
+    doLoadLocal: function () {
+        // Load saved gameboards from local storage
+        var dataStr = (localStorage.savedBoards ? atob(localStorage.savedBoards) : undefined)
+        var dataObj = (dataStr ? JSON.parse(dataStr) : undefined);
+        GGB.savedBoards.data = (dataObj ? dataObj : [GGB.gameboard.getDefaultBoard()]);
+    }
+};
+
+GGB.savedBoards.init();
+GGB.configTiles.init();
+GGB.gameboard.init();
+GGB.page.init();

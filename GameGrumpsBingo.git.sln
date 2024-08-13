@@ -1,26 +1,32 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GameGrumpsBingo.git", "D:\Documents\OneDrive\Documents\Personal\Projects\C#\GameGrumpsBingo.git\", "{AD0DC4F1-6769-4648-9BFF-3EC81B911874}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GameGrumpsBingo.git(1)", "D:\Documents\Projects\GGB\html\", "{AD0DC4F1-6769-4648-9BFF-3EC81B911874}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56258"
-		Debug.AspNetCompiler.PhysicalPath = "D:\Documents\OneDrive\Documents\Personal\Projects\C#\GameGrumpsBingo.git\"
+		Debug.AspNetCompiler.PhysicalPath = "html\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56258\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/localhost_56258"
-		Release.AspNetCompiler.PhysicalPath = "D:\Documents\OneDrive\Documents\Personal\Projects\C#\GameGrumpsBingo.git\"
+		Release.AspNetCompiler.PhysicalPath = "html\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56258\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "56258"
+		SlnRelativePath = "html\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D2FCE75-08C0-403E-9397-E912B07A1252}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Global

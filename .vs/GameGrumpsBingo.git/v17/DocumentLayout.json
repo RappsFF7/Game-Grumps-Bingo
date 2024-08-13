@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Documents\\Projects\\GGB\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|d:\\documents\\projects\\ggb\\html\\js\\script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|solutionrelative:html\\js\\script.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|d:\\documents\\projects\\ggb\\html\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|solutionrelative:html\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|d:\\documents\\projects\\ggb\\html\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{AD0DC4F1-6769-4648-9BFF-3EC81B911874}|D:\\Documents\\Projects\\GGB\\html|solutionrelative:html\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "script.js",
+              "DocumentMoniker": "D:\\Documents\\Projects\\GGB\\html\\js\\script.js",
+              "RelativeDocumentMoniker": "html\\js\\script.js",
+              "ToolTip": "D:\\Documents\\Projects\\GGB\\html\\js\\script.js",
+              "RelativeToolTip": "html\\js\\script.js",
+              "ViewState": "AQIAAL0AAAAAAAAAAAAkwNAAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-08-13T18:53:37.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "style.css",
+              "DocumentMoniker": "D:\\Documents\\Projects\\GGB\\html\\css\\style.css",
+              "RelativeDocumentMoniker": "html\\css\\style.css",
+              "ToolTip": "D:\\Documents\\Projects\\GGB\\html\\css\\style.css",
+              "RelativeToolTip": "html\\css\\style.css",
+              "ViewState": "AQIAABQBAAAAAAAAAAAcwCQBAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-08-13T18:53:36.788Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\Documents\\Projects\\GGB\\html\\index.html",
+              "RelativeDocumentMoniker": "html\\index.html",
+              "ToolTip": "D:\\Documents\\Projects\\GGB\\html\\index.html",
+              "RelativeToolTip": "html\\index.html",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAACQAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2024-08-13T18:51:27.78Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

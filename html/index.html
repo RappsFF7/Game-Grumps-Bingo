@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+    <link href="https://fonts.googleapis.com/css?family=B612&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body id="ggb">
+    <div id="background">
+        <div id="background-left"></div>
+        <div id="background-right"></div>
+    </div>
+    <div id="content">
+        <div id="header-bar">
+            <img id="gg-logo" class="clickable" src="images/gg_logo.png" />
+            <img id="bingo-logo" class="clickable" src="images/bingo_logo.png" />
+            <span id="config-name" class="hidden"></span>
+            <span id="header-menu">
+                <img id="btn-menu" class="clickable" src="images/icons8-menu-vertical-50.png" />
+            </span>
+            <div id="header-menu-popup">
+                <ul class="ul-nostyle">
+                    <li id="btn-menu-back" class="clickable"><img src="images/icons8-menu-vertical-50.png" />
+                    <li id="btn-config" class="clickable"><img src="images/icons8-settings-50.svg" />Config
+                    <li id="btn-saved" class="clickable"><img src="images/icons8-playlist-50.png" />Saved
+                    <li id="btn-share" class="clickable"><img src="images/icons8-share-30.svg" />Share
+                    <li id="btn-reset" class="clickable"><img src="images/icons8-reset-50.png" />Reset
+                    <li id="btn-about" class="clickable"><img src="images/icons8-info-50.svg" />About
+                </ul>
+            </div>
+        </div>
+        <div id="gameboard-wrapper" class="content-body">
+            <div id="win-wrapper" class="clickable hidden">
+                <img id="bingo-text" src="images/gg_icon_bingo.png" />
+            </div>
+            <table id="gameboard">
+                <thead>
+                    <tr>
+                        <th colspan="100%">
+                            <select id="gameboard-name" class="select-button clickable"></select>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="config-wrapper" class="content-body">
+            <div id="config-area">
+                <table id="config-tiles-template" class="template">
+                    <tr class="template">
+                        <td class="controls clickable" title="delete"><img class="icon icon-delete remove" /></td>
+                        <td class="free"><input name="free" type="checkbox" class="icon icon-checkbox icon-grid" /><label for="" class="clickable" title="Free or Surrounding Tile"></label></td>
+                        <td class="title"><input name="title" /></td>
+                    </tr>
+                </table>
+                <table id="config-tiles" class="edit-list">
+                    <thead>
+                        <tr>
+                            <th colspan="100%">Configure Gameboard</th>
+                        </tr>
+                        <tr>
+                            <th colspan="100%"><input name="name" /></th>
+                        </tr>
+                        <tr class="hidden">
+                            <th class="min"><img src="images/icons8-remove-30.svg" /></th>
+                            <th class="min"><img src="images/icon-grid-center-50.svg" /></th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr><td colspan="100%"><div class="hr"></div></td></tr>
+                        <tr>
+                            <td colspan="100%" class="hidden"><button id="btn-config-add" class="button">Add Row</button></td>
+                            <td colspan="100%"><button id="btn-config-back" class="button clickable">Back</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div id="saved-boards-wrapper" class="content-body">
+            <div id="saved-boards-area">
+                <table id="saved-boards-template" class="template">
+                    <tr class="template">
+                        <td title="Delete"><img class="icon icon-delete remove clickable" /></td>
+                        <td class="hidden"><input name="lock" type="checkbox" class="icon icon-checkbox icon-lock" /><label for=""></label></td>
+                        <td class="hidden"><input name="default" type="radio" class="icon icon-checkbox icon-dot" /><label for=""></label></td>
+                        <td title="Load Board"><img class="icon icon-load load clickable" /></td>
+                        <td class="name"><input name="name" /></td>
+                    </tr>
+                </table>
+                <table id="saved-boards" class="edit-list">
+                    <thead>
+                        <tr>
+                            <th colspan="100%">Saved Gameboards</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr><td colspan="100%"><div class="hr"></div></td></tr>
+                        <tr>
+                            <td colspan="100%"><button id="btn-back" class="button clickable">Back</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div id="share-wrapper" class="content-body">
+            <div>Copy this link and send it to your friends!</div>
+            <div><a id="lnkShare">Custom Bingo</a></div>
+        </div>
+        <div id="about-wrapper" class="content-body">
+            <div>About</div>
+            <div><a target="_blank" href="https://icons8.com/icons/set/menu">Menu</a>, <a target="_blank" href="https://icons8.com/icons/set/delete-sign">Delete</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a></div>
+        </div>
+        <div id="dialogs">
+            <div id="dlg" class="dialog"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

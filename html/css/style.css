@@ -1,0 +1,373 @@
+/* touch-action: manipulation; Fixed 300ms delay on touch-click event, but removes double-tap to zoom */
+html {
+    touch-action: manipulation;
+}
+
+html,
+html button,
+html input,
+html select,
+html option {
+    font-size: 32px;
+    font-family: 'B612', sans-serif;
+}
+
+.color-bg-orange {
+    background-color: #F39450;
+}
+
+.color-bg-orange-lighter {
+    background-color: #F2A561;
+}
+
+.color-bg-orange-lightest {
+    background-color: #f1d2b8;
+}
+
+.template {
+    display: none;
+}
+
+.dialog {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.ul-nostyle {
+    padding: 0;
+    margin: 0;
+}
+
+.ul-nostyle > li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.hr {
+    border-top: 1px solid #f1d2b8;
+    margin: 5px;
+}
+
+.button {
+    background-color: #F2A561;
+    color: black;
+    border: none;
+    border-radius: 5vw;
+    padding: 1vw 3vw;
+}
+
+.select-button {
+    background: none;
+    border: none;
+}
+
+.select-button.single {
+    background: none;
+    -webkit-appearance: none;
+    border: none;
+}
+
+#ggb {
+    padding: 0;
+    margin: 0;
+}
+
+#ggb .clickable {
+    cursor: pointer;
+}
+
+#ggb .icon {
+    height: 50px;
+    width: 50px;
+}
+
+#ggb .icon-delete {
+    background-image: url('../images/icons8-delete-50.svg');
+    background-size: contain;
+}
+
+#ggb .icon-list {
+    background-image: url('../images/icons8-playlist-50.png');
+}
+
+#ggb .icon-load {
+    background-image: url('../images/icons8-reply-arrow-50.png');
+}
+
+#ggb .icon-checkbox {
+    display: none;
+}
+
+#ggb .icon-checkbox ~ label {
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    background-image: url('../images/icons8-toggle-off-50.png');
+    background-size: contain;
+}
+
+#ggb .icon-checkbox:checked ~ label {
+    background-image: url('../images/icons8-toggle-on-50.png');
+}
+
+#ggb .icon-checkbox.icon-grid ~ label {
+    background-image: url('../images/icons8-squared-menu-outer-50.png');
+    height: 75px;
+    width: 75px;
+}
+
+#ggb .icon-checkbox.icon-grid:checked ~ label {
+    background-image: url('../images/icons8-squared-menu-center-50.png');
+}
+
+#ggb .icon-checkbox.icon-lock ~ label {
+    background-image: url('../images/icons8-lock-open-50.png');
+}
+
+#ggb .icon-checkbox.icon-lock:checked ~ label {
+    background-image: url('../images/icons8-lock-50.png');
+}
+
+#ggb .icon-checkbox.icon-dot ~ label {
+    background-image: url('../images/icons8-circle-filled-50.png');
+}
+
+#ggb .icon-checkbox.icon-dot:checked ~ label {
+    background-image: url('../images/icons8-circle-50.png');
+}
+
+#ggb .edit-list {
+    width: 100%;
+    max-width: 1024px;
+    border-spacing: 0 1vw;
+}
+
+#ggb .edit-list tr {
+}
+
+#ggb .edit-list tr > * {
+    padding: 10px 15px;
+}
+
+#ggb .edit-list tr > *:first-child {
+    border-radius: 25px 0 0 25px;
+    padding-left: 30px;
+}
+
+#ggb .edit-list tr > *:last-child {
+    border-radius: 0 25px 25px 0;
+    padding-right: 30px;
+    width: 100%;
+}
+
+#ggb .edit-list td {
+}
+
+#ggb .edit-list td > * {
+    vertical-align: middle;
+}
+
+#ggb .edit-list th.min {
+    width: 1%;
+}
+
+#ggb .edit-list input {
+    width: 90%;
+    border-radius: 25px;
+    border: none;
+    padding: 5px 30px;
+    background-color: #f1d2b8;
+}
+
+#ggb #background {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background: url('../images/gg_bg.jpg');
+    background-size: cover;
+}
+/*#ggb #background > * { position: absolute; height: 100%; width: 100%; }
+    #ggb #background-left { background: url('../images/gg_bg_car.jpg'); background-size: cover; transform: translateX(-50%); }
+    #ggb #background-right { background: url('../images/gg_bg_volleyball.jpg'); background-size: cover; transform: translateX(+50%); }*/
+
+#ggb #content {
+    position: relative;
+    text-align: center;
+    user-select: none;
+}
+
+#ggb #content table {
+    display: inline-table;
+}
+
+#ggb #content table.template {
+    display: none;
+}
+
+#ggb #content .content-body {
+    display: none;
+    box-shadow: 0 0 10px black;
+    background-color: #F39450;
+}
+
+#ggb #content #gameboard-wrapper.content-body {
+    box-shadow: none;
+    background-color: transparent;
+}
+
+#ggb #header-bar {
+    background-color: #F39450;
+    text-align: left;
+    padding: 1vh;
+    margin-bottom: 4vh;
+    box-shadow: 0 0 10px black;
+}
+
+#ggb #header-bar > * {
+    vertical-align: middle;
+}
+
+#ggb #header-bar img {
+    height: 5vh;
+    max-height: 10vw;
+}
+
+#ggb #header-menu {
+    float: right;
+}
+
+#ggb #header-menu > * {
+    margin-left: 15px;
+}
+
+#ggb #header-menu-popup {
+    display: none;
+    background-color: #F39450;
+    padding: 1vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    box-shadow: -1px 1px 20px black;
+}
+
+#ggb #header-menu-popup ul {
+    display: inline-block;
+}
+
+#ggb #header-menu-popup li {
+    padding: 1vh;
+}
+
+#ggb #header-menu-popup li:first-child {
+    padding: 0;
+    text-align: right;
+}
+
+#ggb #header-menu-popup li:last-child {
+    padding-bottom: 0px;
+}
+
+#ggb #header-menu-popup li > * {
+    vertical-align: middle;
+}
+
+#ggb #header-menu-popup img {
+    height: 5vh;
+    padding-right: 20px;
+}
+
+#ggb #header-menu-popup li:first-child img {
+    padding: 0;
+}
+
+#ggb #win-wrapper { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#ggb #win-wrapper #bingo-text {
+    position: absolute;
+    top: calc(50vh - calc(407px / 2));
+    left: calc(50vw - calc(1249px / 2));
+    transform: rotate(-17deg);
+}
+
+#ggb #gameboard-wrapper {
+}
+
+#ggb #gameboard {
+    table-layout: fixed;
+    border-collapse: collapse;
+    object-fit: contain;
+    box-shadow: 0 0 10px black;
+}
+
+#ggb #gameboard tr > th {
+    height: auto;
+}
+
+#ggb #gameboard tr > * {
+    background: white;
+    text-align: center;
+    padding: 5px;
+    width: 10vh;
+    height: 10vh;
+    font-size: 2vh;
+    border: solid 2px black;
+}
+
+#ggb #gameboard tr select {
+    font-size: 2vh;
+}
+
+#ggb #gameboard td.checked {
+    background: rgba(255,255,255,0.5);
+    text-shadow: -2px 2px white, 1px -1px white;
+}
+
+#ggb #gameboard #gameboard-name {
+    background: none;
+}
+
+#ggb #config-wrapper {
+    margin-bottom: 15px;
+}
+
+#ggb #config-area {
+    padding: 25px;
+}
+
+#ggb #config-area input[name=name] {
+    text-align: center;
+}
+
+#ggb #saved-boards-wrapper {
+}
+
+#ggb #saved-boards-area {
+    padding: 25px;
+}
+
+#ggb #share-wrapper {
+    padding: 5px 10px;
+}
+
+#ggb #share-wrapper #lnkShare {
+    background-color: #f1d2b8;
+    display: inline-block;
+    padding: 0.5em 1em;
+    margin: 1em;
+    border-radius: 2em;
+}
+
+#ggb #about-wrapper {
+    padding: 5px 10px;
+}
