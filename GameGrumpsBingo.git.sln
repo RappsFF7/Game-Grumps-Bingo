@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GameGrumpsBingo.git(1)", "D:\Documents\Projects\GGB\html\", "{AD0DC4F1-6769-4648-9BFF-3EC81B911874}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GameGrumpsBingo.git", "html\", "{AD0DC4F1-6769-4648-9BFF-3EC81B911874}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56258"
