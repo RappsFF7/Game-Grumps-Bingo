@@ -33,7 +33,7 @@ html option {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .ul-nostyle {
@@ -224,6 +224,7 @@ html option {
     text-align: left;
     padding: 1vh;
     margin-bottom: 4vh;
+    line-height: 1vh;
     box-shadow: 0 0 10px black;
 }
 
@@ -285,6 +286,7 @@ html option {
 }
 
 #ggb #win-wrapper { 
+    display: grid;
     position: absolute;
     top: 0;
     left: 0;
@@ -294,9 +296,9 @@ html option {
 }
 
 #ggb #win-wrapper #bingo-text {
-    position: absolute;
-    top: calc(50vh - calc(407px / 2));
-    left: calc(50vw - calc(1249px / 2));
+    max-width: 90vw;
+    max-height: 90vh;
+    margin: auto;
     transform: rotate(-17deg);
 }
 
@@ -317,15 +319,16 @@ html option {
 #ggb #gameboard tr > * {
     background: white;
     text-align: center;
-    padding: 5px;
-    width: 10vh;
-    height: 10vh;
-    font-size: 2vh;
+    padding: 1vmin;
+    width: 10vmin;
+    height: 10vmin;
+    font-size: 2.5vmin;
     border: solid 2px black;
 }
 
-#ggb #gameboard tr select {
-    font-size: 2vh;
+#ggb #gameboard tr select,
+#ggb #gameboard tr select option {
+    font-size: 3vmin;
 }
 
 #ggb #gameboard td.checked {
@@ -333,8 +336,10 @@ html option {
     text-shadow: -2px 2px white, 1px -1px white;
 }
 
-#ggb #gameboard #gameboard-name {
+#ggb #gameboard #gameboard-name,
+#ggb #gameboard #gameboard-name option {
     background: none;
+    font-size: 3vmin;
 }
 
 #ggb #config-wrapper {
