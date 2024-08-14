@@ -65,6 +65,9 @@ GGB.gameboard = {
             GGB.gameboard.doToggleSquare(this);
             GGB.gameboard.doWinCheck();
         });
+        $('#gameboard-clear').on('click', function () {
+            GGB.gameboard.doClear();
+        });
         $('#win-wrapper').on('click', function () {
             GGB.gameboard.doWin(false);
         });
@@ -191,65 +194,110 @@ GGB.gameboard = {
             }
         }
     },
+    doClear: function () {
+        if (confirm("Clear Board will uncheck all checked board tiles. Do you want to continue?")) {
+            $('#gameboard td').removeClass('checked')
+        }
+    },
     doWinCheck: function () {
-        var isWin = false;
+        var start = (Date.now());
+
+        var IS_LOGGING = false;
+        var log = function () {
+            if (!IS_LOGGING) return;
+            console.log.apply(console, arguments);
+        }
 
         var isChecked = function (el) { return $(el).is('.checked') }
-        var data = $('#gameboard td').map((i,el) => isChecked(el) ? 1 : 0);
-        
-        var boardSize = Math.sqrt(data.length);
-        var isBingo = function (arr, pos, dirX, dirY, checkedCount, codeBranch) {
+        var getAbsPos = function (pos, dirX, dirY) { return pos + dirX + (dirY * boardSize) }
+
+        var dataLinear = $('#gameboard td').map((i, el) => isChecked(el) ? true : false);
+        var boardSize = Math.sqrt(dataLinear.length);
+
+        var dataBox = []
+        Array(boardSize).fill(0).map((el, y) => {
+            dataBox.push(Array(boardSize).fill(0).map((el, x) => dataLinear[getAbsPos(0, x, y)]))
+        });
+        log('dataBox', dataBox);
+
+        /** Checks a single cell for bingo */
+        var isCellBingo = function (dataBox, posX, posY, runX, runY, checkedCount, codeBranch) {
             var isBingoData = {
-                pos: pos,
-                dirX: dirX,
-                dirY: dirY,
+                pos: posX + "," + posY,
+                run: runX + "," + runY,
                 checkedCount: checkedCount,
-                codeBranch: codeBranch
+                codeBranch: codeBranch,
             }
-            //console.log("isBingo", isBingoData);
+            log("isBingo", isBingoData);
+
+            var absX = posX + runX;
+            var absY = posY + runY;
+
+            var isOutOfBounds = function (x, y) {
+                return (x < 0 || x >= boardSize || y < 0 || y >= boardSize);
+            }
+            var getCellValue = function (x, y, rX, rY) {
+                var newAbsX = x + rX;
+                var newAbsY = y + rY;
+                if (isOutOfBounds(newAbsX, newAbsY)) return false;
+                return dataBox[newAbsX][newAbsY];
+            }
 
             // Bingo!
-            if (checkedCount == boardSize) return true
+            if (checkedCount == boardSize) return true;
 
+            // Out of bounds
+            if (isOutOfBounds(dataBox, absX, absY)) return false;
+
+            // Cell is not checked
+            var cellVal = dataBox[absX][absY];
+            if (cellVal !== true) return false;
+            
+            // Cell is checked
             else {
-                // Out of board bounds
-                if (pos < 0 || pos > arr.length) return false;
-
-                // Board cell is unchecked
-                var val = arr[pos];
-                if (val == 0) {
-                    // We aren't on a potential path for bingo, so go to the next cell
-                    if (checkedCount == 0) {
-                        return isBingo(arr, (pos + 1), 0, 0, 0, 'walking board')
-                    }
-                    // We ARE on a potential path for bingo, return false
-                    else {
-                        return false;
-                    }
-                }
-                // Board cell is CHECKED
-                else {
-                    // We aren't on a potential path for bingo, so check all directions for bingo
-                    if (checkedCount == 0) {
-                        for (var y = -1; y <= 1; y++) {
-                            for (var x = -1; x <= 1; x++) {
-                                if (x + y == 0) continue;
-                                if (isBingo(arr, (pos + (x + y * boardSize)), x, y, 1, 'start potential bingo')) return true
-                            }
+                // No run started, start run in all 8 surrounding directions
+                if (checkedCount == 0) {
+                    for (var y = -1; y <= 1; y++) {
+                        for (var x = -1; x <= 1; x++) {
+                            if (x == 0 && y == 0) continue;
+                            var isCellBingoVal = isCellBingo(dataBox, posX, posY, x, y, 2, 'run start ' + [x, y]);
+                            if (isCellBingoVal) return true;
                         }
                     }
-                    // We ARE on a potential path for bingo, continue current direction
-                    else {
-                        return isBingo(arr, (pos + dirX + dirY * boardSize), dirX, dirY, (checkedCount + 1), 'checking for bingo');
+                }
+
+                // Run already started, continue singlular direction
+                else {
+                    var newRunX = runX + (runX == 0 ? 0 : runX > 0 ? 1 : -1);
+                    var newRunY = runY + (runY == 0 ? 0 : runY > 0 ? 1 : -1);
+                    var newCellVal = getCellValue(posX, posY, newRunX, newRunY);
+                    if (newCellVal === true) {
+                        return isCellBingo(dataBox, posX, posY, newRunX, newRunY, (checkedCount + 1), 'run continue ' + [newRunX, newRunY]);
                     }
+                    isBingoData.codeBranch = 'run end ' + [newRunX, newRunY];
+                    log("isBingo", isBingoData);
+                    return false
                 }
             }
         }
-        isWin = isBingo(data, 0, 0, 0, 0, 0, 'start');
 
+        /** Walks the board, checking every cell for bingo */
+        function isBoardBingo() {
+            for (var y = 0; y < boardSize; y++) {
+                for (var x = 0; x < boardSize; x++) {
+                    if (isCellBingo(dataBox, x, y, 0, 0, 0, 'walk board')) return true;
+                }
+            }
+            return false;
+        }
+
+        // Check the board for a winning condition
+        isWin = isBoardBingo();
         if (isWin) {
             GGB.gameboard.doWin(true);
         }
+
+        log('time to complete ' + (Date.now() - start));
         return isWin;
     },
     doWin: function (isShow) {

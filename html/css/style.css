@@ -261,6 +261,7 @@ html option {
 
 #ggb #header-menu-popup li {
     padding: 1vh;
+    line-height: 1em;
 }
 
 #ggb #header-menu-popup li:first-child {
